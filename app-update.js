@@ -1,4 +1,17 @@
 (() => {
+  const release='0.2.3';
+  const appBase=new URL('./',document.currentScript.src);
+  function versionLink(anchor){
+    const raw=anchor.getAttribute('href');
+    if(!raw||raw.startsWith('#'))return;
+    const url=new URL(raw,location.href);
+    if(url.origin!==appBase.origin||!url.pathname.startsWith(appBase.pathname))return;
+    if(!url.pathname.endsWith('/')&&!url.pathname.endsWith('.html'))return;
+    url.searchParams.set('v',release);anchor.href=url.href;
+  }
+  document.querySelectorAll('a[href]').forEach(versionLink);
+  document.addEventListener('click',event=>{const a=event.target.closest('a[href]');if(a)versionLink(a);},true);
+
   const style = document.createElement('style');
   style.textContent = `
     body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
