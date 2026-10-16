@@ -1,1 +1,46 @@
 .global-nav{display:flex;gap:12px;flex-wrap:wrap}.site-shell main{max-width:1400px;margin:auto;width:100%;padding:18px}.reference-card{margin-bottom:18px}@media print{.app-header,.footer,button{display:none!important}}.public-tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:20px}.public-tool{display:block;padding:18px;text-decoration:none}.public-tool[hidden]{display:none}
+/* Public mobile layout: contain every grid and scroll only wide tables. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.site-shell,.site-shell main,.site-shell main>*{min-width:0;max-width:100%}
+.site-shell .app-header{margin-inline:0;padding-inline:0;max-width:100%;top:env(safe-area-inset-top,0px)}
+.app-header .topbar{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;padding:12px 0!important;min-width:0}
+.app-header .brand{min-height:44px;min-width:0;padding-right:112px;white-space:normal}
+.app-header .global-nav{display:flex;flex-wrap:nowrap;width:100%;max-width:100%;min-width:0;overflow-x:auto;gap:2px;justify-content:space-between}
+.app-header .global-nav a{flex:1 0 auto;text-align:center}
+.reference-card,.standard-reference>*,.gear-page-layout>*,.gear-output-layout>*,.electrical-layout>*,.workspace>*{min-width:0}
+.spec-table-wrap,.table-scroll,.air-table-wrap,.tube-table-wrap{max-width:100%;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.site-shell svg,.site-shell img{max-width:100%;height:auto}
+@media(max-width:820px){
+ .standard-reference,.hole-tap-layout,.fit-layout,.symbol-card,.gear-page-layout,.gear-output-layout,.electrical-layout,#ks-standard-app .std-layout{grid-template-columns:minmax(0,1fr)!important}
+ .page-heading{display:flex;flex-direction:column;align-items:stretch;width:100%;min-width:0;gap:20px}
+ .page-heading>*,.page-actions{min-width:0;max-width:100%}
+}
+@media(max-width:600px){
+ .site-shell{width:100%;padding:0 14px;margin:0 auto}
+ .site-shell main{width:100%;padding:16px 0 32px}
+ .page-heading{padding:22px 18px;margin-bottom:18px;border-radius:18px}
+ .page-heading h1{font-size:30px;line-height:1.25;overflow-wrap:anywhere}
+ .page-heading p{font-size:14px;line-height:1.65;overflow-wrap:anywhere}
+ .page-heading .eyebrow{font-size:11px;letter-spacing:1px}
+ .page-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;gap:8px}
+ .page-actions .button{min-width:0;padding:10px 6px;font-size:13px;white-space:normal;text-align:center}
+ .reference-card,#ks-standard-app .std-card{padding:18px 14px;border-radius:16px}
+ .reference-card label{display:block;margin-bottom:12px}
+ .reference-card input,.reference-card select{min-width:0;max-width:100%;font-size:16px}
+ .reference-card h2{font-size:22px;overflow-wrap:anywhere}
+ .thread-preview{padding:8px;margin-top:16px}.thread-preview svg{margin-top:8px}
+ .thread-chip{min-width:44px;min-height:44px;font-size:14px;padding:6px}
+ .result-heading>div{min-width:0}.spec-table{font-size:13px}
+ .spec-table th,.spec-table td{padding:11px 10px}
+ .global-nav a{font-size:12px;padding:9px 8px}
+ .fit-result-grid,.spec-result-grid{grid-template-columns:minmax(0,1fr)}
+}
+.app-header .brand-copy{display:grid;min-width:0}
+.public-brand-icon{width:34px;height:34px;flex:none;border-radius:9px}
+@media(max-width:600px){
+ .app-header .brand-copy strong{font-size:14px}.app-header .brand-copy small{font-size:8px;letter-spacing:.04em}
+ .hole-tap-layout .spec-table{min-width:0;table-layout:fixed;width:100%}
+ .hole-tap-layout .spec-table th,.hole-tap-layout .spec-table td{overflow-wrap:anywhere;font-size:12px;padding:10px 7px}
+ .hole-tap-layout .spec-table th:first-child{width:30%}
+ .hole-tap-layout .spec-table td:nth-child(2){width:40%}
+}
