@@ -1,0 +1,58 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b5263"><title>calculators/gears/timing-pulley · ItsnoruLAB Design Tools</title><link rel="manifest" href="../../../manifest.json"><link rel="stylesheet" href="../../../styles.css"><link rel="stylesheet" href="../../../styles/ui-v2.css"><link rel="stylesheet" href="../../../public-design-tools.css"><script defer src="../../../theme.js"></script></head><body><div class="site-shell"><header class="app-header"><div class="topbar"><a class="brand" href="../../../"><span class="brand-copy"><strong>ItsnoruLAB</strong><small>Design Tools · Public</small></span></a><nav class="global-nav" aria-label="도구"><a href="../../../">전체 도구</a><a href="../../../calculators/servo/">기계</a><a href="../../../electrical/motor-current/">전기</a><a href="../../../standards/holes-taps/">규격</a><a href="../../../catalog/bushings/">기성품</a></nav></div></header><main>
+<section class="page-heading calculator-heading">
+  <div><p class="eyebrow">TIMING PULLEY CALCULATOR</p><h1>타이밍풀리 계산기</h1><p>두 타이밍풀리를 연결하는 폐루프 벨트의 피치선 전체 길이를 계산합니다.</p></div>
+  <div class="page-actions"><a class="button" href="../../../">메인으로</a><a class="button button-ghost" href="../../../calculators/gears/spur/">이전 선택</a></div>
+</section>
+
+<div id="timing-pulley-app">
+  <div class="gear-page-layout">
+    <section class="reference-card">
+      <div class="result-heading"><div><span class="status-label state-on">입력 조건</span><h2>타이밍풀리 제원</h2></div><button class="button button-small" id="timing-example" type="button">예제값 불러오기</button></div>
+      <form id="timing-form" class="gear-input-grid">
+        <label>벨트 타입<select id="timing-type"><option value="S3M">S3M · 피치 3 mm</option><option value="S5M" selected>S5M · 피치 5 mm</option><option value="S8M">S8M · 피치 8 mm</option></select></label>
+        <label>벨트 폭<select id="timing-width"></select></label>
+        <label>구동 풀리 잇수 z₁<input id="timing-teeth-1" type="number" min="12" max="300" step="1" value="20" required></label>
+        <label>종동 풀리 잇수 z₂<input id="timing-teeth-2" type="number" min="12" max="300" step="1" value="40" required></label>
+        <label>축간거리 C (mm)<input id="timing-center" type="number" min="1" step="0.1" value="300" required></label>
+        <div class="gear-form-actions"><button class="button button-primary" type="submit">계산하기</button><button class="button" id="timing-reset" type="button">초기화</button></div>
+      </form>
+      <p class="reference-note">벨트 폭은 계산 결과에 영향을 주지 않으며 호환 풀리·벨트 주문 규격을 표시하기 위한 조건입니다.</p>
+    </section>
+
+    <div class="gear-output-layout">
+      <section class="reference-card gear-result-card">
+        <div class="result-heading"><div><span class="status-label">계산 결과</span><h2>폐루프 벨트 전체 길이</h2></div><span class="thread-chip" id="timing-chip">S5M</span></div>
+        <div class="highlight-result"><span>두 풀리 접선부 + 감김부</span><strong id="timing-circumference">—</strong><p>벨트 심선의 피치선 기준 전체 둘레입니다.</p></div>
+        <div class="spec-table-wrap"><table class="spec-table" aria-label="타이밍풀리 계산 결과"><tbody>
+          <tr><th>선택 규격</th><td id="timing-selection">—</td></tr><tr><th>치형 피치 p</th><td id="timing-pitch">—</td></tr>
+          <tr><th>풀리 1 피치원지름</th><td id="timing-pd-1">—</td></tr><tr><th>풀리 2 피치원지름</th><td id="timing-pd-2">—</td></tr>
+          <tr><th>계산 벨트 잇수</th><td id="timing-belt-teeth">—</td></tr><tr><th>최근접 정수잇수 길이</th><td id="timing-nearest-length">—</td></tr>
+          <tr><th>속도비 z₂/z₁</th><td id="timing-ratio">—</td></tr><tr><th>작은 풀리 감김각</th><td id="timing-wrap">—</td></tr>
+        </tbody></table></div>
+      </section>
+      <section class="reference-card gear-drawing-card">
+        <span class="status-label state-on">참고그림</span><h2>풀리 피치원과 벨트 이동</h2>
+        <svg class="gear-reference-drawing" viewBox="0 0 520 420" role="img" aria-label="타이밍풀리 피치원 참고그림">
+          <defs><marker id="timing-arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#2b6f9e"/></marker></defs>
+          <circle cx="150" cy="210" r="62" fill="#e7f0f3" stroke="#173f4f" stroke-width="5"/><circle cx="370" cy="210" r="102" fill="#eef4e0" stroke="#173f4f" stroke-width="5"/>
+          <circle cx="150" cy="210" r="50" fill="none" stroke="#2b6f9e" stroke-width="3" stroke-dasharray="8 5"/><circle cx="370" cy="210" r="88" fill="none" stroke="#2b6f9e" stroke-width="3" stroke-dasharray="8 5"/>
+          <path d="M150 160 L370 122 A88 88 0 1 1 370 298 L150 260 A50 50 0 1 1 150 160" fill="none" stroke="#6b8f22" stroke-width="12"/><path d="M150 160 L370 122 M370 298 L150 260" fill="none" stroke="#173f4f" stroke-width="2" stroke-dasharray="7 8"/>
+          <line x1="150" y1="355" x2="370" y2="355" stroke="#2b6f9e" stroke-width="2" marker-start="url(#timing-arrow)" marker-end="url(#timing-arrow)"/><text id="timing-drawing-center" x="220" y="345">축간거리 C</text>
+          <text x="112" y="215">z₁</text><text x="340" y="215">z₂</text><text x="208" y="75">폐루프 벨트 피치선</text>
+        </svg>
+        <p class="reference-note">벨트 길이는 두 피치원의 공통 외접선과 각 풀리에 감기는 호 길이를 합산합니다.</p>
+      </section>
+    </div>
+  </div>
+  <section class="reference-card gear-formulas"><span class="status-label">계산식·기준</span><h2>적용 계산식</h2><ol class="formula-list"><li>피치반지름 r = p × z / (2π)</li><li>접선각 θ = sin⁻¹((r₂ − r₁) / C)</li><li>직선부 s = √(C² − (r₂ − r₁)²)</li><li>벨트 전체 길이 L = 2s + r₁(π − 2θ) + r₂(π + 2θ)</li><li>계산 벨트 잇수 Zb = L / p</li></ol><p class="source-note">벨트는 교차하지 않는 일반 오픈 구동 기준입니다. 실제 주문은 제조사 표준 벨트 잇수 중 가장 가까운 규격을 선택하고 축간거리 조정범위를 확인하세요.</p></section>
+</div>
+
+<script nonce="">
+(()=>{const specs={S3M:{pitch:3,widths:[6,10]},S5M:{pitch:5,widths:[10,15]},S8M:{pitch:8,widths:[15,25]}},type=document.getElementById('timing-type'),width=document.getElementById('timing-width'),z1=document.getElementById('timing-teeth-1'),z2=document.getElementById('timing-teeth-2'),center=document.getElementById('timing-center'),form=document.getElementById('timing-form'),fmt=(n,d=3)=>Number(n).toLocaleString('ko-KR',{maximumFractionDigits:d});
+function widths(){const previous=Number(width.value),values=specs[type.value].widths;width.innerHTML=values.map(v=>`<option value="${v}" ${v===previous?'selected':''}>${v} mm</option>`).join('');}
+function calculate(){if(!form.checkValidity())return;const s=specs[type.value],a=Number(z1.value),b=Number(z2.value),c=Number(center.value),r1=s.pitch*a/(2*Math.PI),r2=s.pitch*b/(2*Math.PI),delta=Math.abs(r2-r1);if(c<=delta){document.getElementById('timing-circumference').textContent='축간거리 부족';return;}const theta=Math.asin(delta/c),straight=Math.sqrt(c*c-delta*delta),length=2*straight+Math.min(r1,r2)*(Math.PI-2*theta)+Math.max(r1,r2)*(Math.PI+2*theta),beltTeeth=length/s.pitch,nearest=Math.round(beltTeeth),smallWrap=(Math.PI-2*theta)*180/Math.PI;document.getElementById('timing-chip').textContent=type.value;document.getElementById('timing-circumference').textContent=`${fmt(length)} mm`;document.getElementById('timing-selection').textContent=`${type.value} · 폭 ${width.value} mm · ${fmt(a,0)}T / ${fmt(b,0)}T`;document.getElementById('timing-pitch').textContent=`${s.pitch} mm`;document.getElementById('timing-pd-1').textContent=`${fmt(2*r1)} mm`;document.getElementById('timing-pd-2').textContent=`${fmt(2*r2)} mm`;document.getElementById('timing-belt-teeth').textContent=`${fmt(beltTeeth)} T`;document.getElementById('timing-nearest-length').textContent=`${nearest} T · ${fmt(nearest*s.pitch)} mm`;document.getElementById('timing-ratio').textContent=`${fmt(b/a)} : 1`;document.getElementById('timing-wrap').textContent=`${fmt(smallWrap,1)}°`;document.getElementById('timing-drawing-center').textContent=`C = ${fmt(c)} mm`;}
+type.addEventListener('change',()=>{widths();calculate();});form.addEventListener('input',calculate);form.addEventListener('submit',e=>{e.preventDefault();calculate();});document.getElementById('timing-example').addEventListener('click',()=>{type.value='S5M';widths();width.value='15';z1.value='20';z2.value='40';center.value='300';calculate();});document.getElementById('timing-reset').addEventListener('click',()=>{form.reset();widths();calculate();});widths();calculate();})();
+</script>
+
+
+<div class="reference-card"><p class="source-note">설계 계산과 규격표는 1차 검토용입니다. 실제 제작·발주 전 최신 제조사 자료 및 관련 표준을 확인하세요.</p><button class="button" type="button" onclick="window.print()">인쇄 · PDF 저장</button></div></main><footer class="footer"><strong>ItsnoruLAB Design Tools</strong><span>Public edition · no login / no project database</span></footer></div></body></html>

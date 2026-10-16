@@ -1,0 +1,65 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b5263"><title>standards/fits · ItsnoruLAB Design Tools</title><link rel="manifest" href="../../manifest.json"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../styles/ui-v2.css"><link rel="stylesheet" href="../../public-design-tools.css"><script defer src="../../theme.js"></script></head><body><div class="site-shell"><header class="app-header"><div class="topbar"><a class="brand" href="../../"><span class="brand-copy"><strong>ItsnoruLAB</strong><small>Design Tools · Public</small></span></a><nav class="global-nav" aria-label="도구"><a href="../../">전체 도구</a><a href="../../calculators/servo/">기계</a><a href="../../electrical/motor-current/">전기</a><a href="../../standards/holes-taps/">규격</a><a href="../../catalog/bushings/">기성품</a></nav></div></header><main>
+<section class="page-heading calculator-heading">
+  <div>
+    <p class="eyebrow">KS B ISO 286-1 · KS B ISO 286-2</p>
+    <h1>끼워맞춤 공차</h1>
+    <p>기준 구멍 방식의 일반 틈새 끼워맞춤 공차를 계산합니다.</p>
+  </div>
+  <div class="page-actions">
+    <a class="button" href="../../">메인으로</a>
+    <a class="button button-ghost" href="../../">KS 표준 선택으로</a>
+  </div>
+</section>
+
+<div class="standard-reference fit-layout">
+  <section class="reference-card">
+    <h2>공차 계산 조건</h2>
+    <div class="stack">
+      <label>기준 치수 (mm)<input id="fit-size" type="number" min="1" max="500" step="0.01" value="25"></label>
+      <label>끼워맞춤 조합<select id="fit-class">
+        <option value="H7/g6">H7/g6 · 정밀 미끄럼</option>
+        <option value="H7/h6">H7/h6 · 위치결정 틈새</option>
+        <option value="H8/f7">H8/f7 · 일반 회전·미끄럼</option>
+        <option value="H8/e8">H8/e8 · 큰 틈새</option>
+      </select></label>
+    </div>
+    <div class="fit-diagram" aria-label="구멍과 축 공차대 위치">
+      <div class="zero-line">기준 치수 0선</div><div class="zone hole-zone">구멍 H</div><div class="zone shaft-zone">축</div>
+    </div>
+    <p class="reference-note">계산 범위는 1–500 mm이며 ISO 286의 표준 공차단위식과 대표적인 f·g·h 기본편차식을 사용합니다. 생산도면 확정 전에는 최신 KS B ISO 286-2 한계편차표와 반드시 대조하세요.</p>
+  </section>
+
+  <section class="reference-card">
+    <h2 id="fit-result-title">Ø25 H7/g6 계산 결과</h2>
+    <div class="fit-result-grid" id="fit-results"></div>
+    <div class="highlight-result" id="fit-summary"></div>
+    <p class="source-note">ES/EI는 구멍의 위·아래 한계편차, es/ei는 축의 위·아래 한계편차입니다. 모든 편차값은 μm 단위로 계산한 뒤 mm 한계치로 환산합니다.</p>
+  </section>
+
+  <section class="reference-card reference-wide">
+    <h2>일반적인 기준 구멍 끼워맞춤 선택</h2>
+    <div class="table-scroll"><table class="reference-table">
+      <thead><tr><th>성격</th><th>대표 조합</th><th>일반 용도</th></tr></thead>
+      <tbody>
+        <tr><td>큰 틈새</td><td>H8/e8, H9/d9</td><td>온도차가 있거나 큰 운동 틈새가 필요한 축</td></tr>
+        <tr><td>회전·미끄럼</td><td>H8/f7, H7/g6</td><td>윤활 회전축, 정밀 미끄럼 안내</td></tr>
+        <tr><td>위치결정 틈새</td><td>H7/h6</td><td>분해 가능한 정밀 위치결정</td></tr>
+        <tr><td>중간 끼워맞춤</td><td>H7/k6, H7/m6</td><td>가벼운 압입 또는 정밀 위치 고정</td></tr>
+        <tr><td>억지 끼워맞춤</td><td>H7/p6, H7/s6</td><td>토크 전달 또는 영구 결합</td></tr>
+      </tbody>
+    </table></div>
+    <p class="reference-note">중간·억지 끼워맞춤은 재질, 벽 두께, 표면거칠기, 조립 온도와 전달하중에 따라 접촉압력이 크게 달라지므로 단순 공차만으로 확정하지 마세요.</p>
+  </section>
+</div>
+
+<script nonce="">
+(()=>{const size=document.getElementById('fit-size'),kind=document.getElementById('fit-class'),host=document.getElementById('fit-results'),summary=document.getElementById('fit-summary'),title=document.getElementById('fit-result-title');
+const steps=[[1,3],[3,6],[6,10],[10,18],[18,30],[30,50],[50,80],[80,120],[120,180],[180,250],[250,315],[315,400],[400,500]];
+const it=(grade,D)=>{const i=.45*Math.cbrt(D)+.001*D;return ({6:10,7:16,8:25,9:40}[grade])*i};
+const signed=n=>(n>=0?'+':'')+Math.round(n);const mm=n=>(n/1000).toFixed(3);
+function render(){const nominal=Math.min(500,Math.max(1,Number(size.value)||1)),step=steps.find(s=>nominal>s[0]&&nominal<=s[1])||steps[0],D=Math.sqrt(step[0]*step[1]);const [hole,shaft]=kind.value.split('/'),hg=Number(hole.slice(1)),sg=Number(shaft.slice(1)),letter=shaft[0];const ES=it(hg,D),EI=0;let es=0;if(letter==='g')es=-2.5*Math.pow(D,.34);if(letter==='f')es=-5.5*Math.pow(D,.41);if(letter==='e')es=-11*Math.pow(D,.41);const ei=es-it(sg,D),holeMin=nominal+EI/1000,holeMax=nominal+ES/1000,shaftMin=nominal+ei/1000,shaftMax=nominal+es/1000,minClear=holeMin-shaftMax,maxClear=holeMax-shaftMin;
+title.textContent=`Ø${nominal} ${kind.value} 계산 결과`;host.innerHTML=[['구멍 편차 ES / EI',`${signed(ES)} / ${signed(EI)} μm`],['축 편차 es / ei',`${signed(es)} / ${signed(ei)} μm`],['구멍 한계치',`${holeMin.toFixed(3)} – ${holeMax.toFixed(3)} mm`],['축 한계치',`${shaftMin.toFixed(3)} – ${shaftMax.toFixed(3)} mm`]].map(x=>`<div class="result-item"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join('');summary.innerHTML=`<span>예상 조립 틈새</span><strong>${mm(minClear*1000)} – ${mm(maxClear*1000)} mm</strong><p>적용 치수 구간: 초과 ${step[0]} mm, 이하 ${step[1]} mm</p>`;}
+[size,kind].forEach(x=>x.addEventListener('input',render));render();})();
+</script>
+
+<div class="reference-card"><p class="source-note">설계 계산과 규격표는 1차 검토용입니다. 실제 제작·발주 전 최신 제조사 자료 및 관련 표준을 확인하세요.</p><button class="button" type="button" onclick="window.print()">인쇄 · PDF 저장</button></div></main><footer class="footer"><strong>ItsnoruLAB Design Tools</strong><span>Public edition · no login / no project database</span></footer></div></body></html>

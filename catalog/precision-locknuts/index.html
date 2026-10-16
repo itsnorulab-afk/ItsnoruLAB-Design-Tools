@@ -1,0 +1,51 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b5263"><title>catalog/precision-locknuts · ItsnoruLAB Design Tools</title><link rel="manifest" href="../../manifest.json"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../styles/ui-v2.css"><link rel="stylesheet" href="../../public-design-tools.css"><script defer src="../../theme.js"></script></head><body><div class="site-shell"><header class="app-header"><div class="topbar"><a class="brand" href="../../"><span class="brand-copy"><strong>ItsnoruLAB</strong><small>Design Tools · Public</small></span></a><nav class="global-nav" aria-label="도구"><a href="../../">전체 도구</a><a href="../../calculators/servo/">기계</a><a href="../../electrical/motor-current/">전기</a><a href="../../standards/holes-taps/">규격</a><a href="../../catalog/bushings/">기성품</a></nav></div></header><main>
+<section class="page-heading calculator-heading">
+  <div>
+    <p class="eyebrow">MISUMI PLNY · PRECISION LOCK NUT</p>
+    <h1>정밀 링너트 규격</h1>
+    <p>PLNY 타입 형번을 선택하면 주요 외형과 체결 치수를 확인할 수 있습니다.</p>
+  </div>
+  <div class="page-actions">
+    <a class="button" href="../../">메인으로</a>
+    <a class="button button-ghost" href="../../">기성품 선택으로</a>
+  </div>
+</section>
+
+<div class="standard-reference" id="plny-app">
+  <section class="reference-card">
+    <span class="status-label state-on">PLNY 타입</span>
+    <h2>형번 선택</h2>
+    <label>정밀 링너트 형번<select id="plny-size"></select></label>
+    <svg class="locknut-drawing" viewBox="0 0 560 320" role="img" aria-label="PLNY 정밀 링너트 치수도">
+      <circle cx="190" cy="155" r="105" fill="#dce3df" stroke="#173f4f" stroke-width="4"/><circle cx="190" cy="155" r="54" fill="white" stroke="#173f4f" stroke-width="4"/>
+      <circle cx="190" cy="50" r="10" fill="#d58621"/><circle cx="99" cy="208" r="10" fill="#d58621"/><circle cx="281" cy="208" r="10" fill="#d58621"/>
+      <line x1="85" y1="280" x2="295" y2="280" stroke="#2b6f9e" stroke-width="2"/><text x="164" y="306">외경 D</text>
+      <line x1="136" y1="155" x2="244" y2="155" stroke="#2b6f9e" stroke-width="2"/><text x="159" y="145">나사 M</text>
+      <rect x="370" y="82" width="96" height="146" rx="5" fill="#dce3df" stroke="#173f4f" stroke-width="4"/>
+      <line x1="370" y1="260" x2="466" y2="260" stroke="#2b6f9e" stroke-width="2"/><text x="397" y="286">폭 B</text>
+      <text x="95" y="28">주황색: 잠금 세트스크루</text>
+    </svg>
+    <p class="reference-note">PLNY는 단면 직각도 0.005 mm의 표준형입니다. 고정용 세트스크루의 인청동 팁이 축 나사산을 눌러 풀림을 방지합니다.</p>
+  </section>
+
+  <section class="reference-card">
+    <div class="result-heading"><div><span class="status-label">선택 형번</span><h2 id="plny-title">PLNY8</h2></div><span class="thread-chip">PLNY</span></div>
+    <div class="spec-table-wrap">
+      <table class="spec-table" aria-label="선택한 PLNY 정밀 링너트 규격">
+        <thead><tr><th scope="col">항목</th><th scope="col">규격 치수</th><th scope="col">기호·비고</th></tr></thead>
+        <tbody id="plny-results"></tbody>
+      </table>
+    </div>
+    <div class="highlight-result"><span>공통 사양</span><strong>SCM440 · HRC 28–32</strong><p>흑색 산화피막 · 나사 정밀도 ISO 4H · 단면 직각도 0.005 mm</p></div>
+    <p class="source-note">치수와 재질은 MISUMI PLNY 정밀 록너트 카탈로그 기준입니다. 구매 시점의 형번 변경, 재고 및 최신 CAD 도면을 제조사 페이지에서 최종 확인하세요.</p>
+  </section>
+</div>
+
+<script nonce="">
+(()=>{const rows=[
+ {m:8,thread:'M8×0.75',D:16,d:11,B:8,S:3,screw:'2×M4',torque:3.5},{m:10,thread:'M10×1.0',D:18,d:13,B:8,S:3,screw:'2×M4',torque:3.5},{m:12,thread:'M12×1.0',D:20,d:16,B:8,S:3,screw:'2×M4',torque:3.5},{m:15,thread:'M15×1.0',D:25,d:21,B:8,S:3,screw:'2×M4',torque:3.5},{m:17,thread:'M17×1.0',D:28,d:23,B:10,S:4,screw:'2×M5',torque:4.5},{m:20,thread:'M20×1.0',D:32,d:27,B:10,S:4,screw:'3×M5',torque:4.5},{m:25,thread:'M25×1.5',D:38,d:33,B:12,S:5,screw:'3×M6',torque:8},{m:30,thread:'M30×1.5',D:45,d:40,B:12,S:5,screw:'3×M6',torque:8},{m:35,thread:'M35×1.5',D:52,d:47,B:12,S:5,screw:'3×M6',torque:8},{m:40,thread:'M40×1.5',D:58,d:52,B:14,S:6,screw:'3×M6',torque:8},{m:45,thread:'M45×1.5',D:65,d:59,B:14,S:6,screw:'3×M6',torque:8},{m:50,thread:'M50×1.5',D:70,d:64,B:14,S:6,screw:'3×M8',torque:18},{m:55,thread:'M55×2.0',D:75,d:68,B:16,S:7,screw:'3×M8',torque:18},{m:60,thread:'M60×2.0',D:80,d:73,B:16,S:7,screw:'3×M8',torque:18}
+];const select=document.getElementById('plny-size'),host=document.getElementById('plny-results'),title=document.getElementById('plny-title');select.innerHTML=rows.map((r,i)=>`<option value="${i}">PLNY${r.m} · ${r.thread}</option>`).join('');const item=(l,v,n='—')=>`<tr><th scope="row">${l}</th><td><strong>${v}</strong></td><td>${n}</td></tr>`;
+function render(){const r=rows[Number(select.value)];title.textContent=`PLNY${r.m}`;host.innerHTML=item('나사 호칭',r.thread,'M × 피치')+item('너트 외경',`Ø${r.D} mm`,'D')+item('지지면 지름',`Ø${r.d} mm`,'d')+item('너트 폭',`${r.B} mm`,'B')+item('홈 폭',`${r.S} mm`,'S')+item('세트스크루',r.screw,'수량 × 나사')+item('최대 체결토크',`${r.torque} N·m`,'허용 최대값')+item('단면 직각도','0.005 mm','최대값');}select.addEventListener('change',render);render();})();
+</script>
+
+<div class="reference-card"><p class="source-note">설계 계산과 규격표는 1차 검토용입니다. 실제 제작·발주 전 최신 제조사 자료 및 관련 표준을 확인하세요.</p><button class="button" type="button" onclick="window.print()">인쇄 · PDF 저장</button></div></main><footer class="footer"><strong>ItsnoruLAB Design Tools</strong><span>Public edition · no login / no project database</span></footer></div></body></html>

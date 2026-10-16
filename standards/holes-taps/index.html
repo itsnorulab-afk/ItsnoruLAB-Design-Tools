@@ -1,0 +1,96 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b5263"><title>standards/holes-taps · ItsnoruLAB Design Tools</title><link rel="manifest" href="../../manifest.json"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../styles/ui-v2.css"><link rel="stylesheet" href="../../public-design-tools.css"><script defer src="../../theme.js"></script></head><body><div class="site-shell"><header class="app-header"><div class="topbar"><a class="brand" href="../../"><span class="brand-copy"><strong>ItsnoruLAB</strong><small>Design Tools · Public</small></span></a><nav class="global-nav" aria-label="도구"><a href="../../">전체 도구</a><a href="../../calculators/servo/">기계</a><a href="../../electrical/motor-current/">전기</a><a href="../../standards/holes-taps/">규격</a><a href="../../catalog/bushings/">기성품</a></nav></div></header><main>
+<section class="page-heading calculator-heading">
+  <div>
+    <p class="eyebrow">KS B ISO 261 · KS B ISO 273 · KS B ISO 7-1</p>
+    <h1>홀 및 탭 규격</h1>
+    <p>미터나사 또는 PT 관용 테이퍼나사를 선택해 가공 기준 치수를 확인할 수 있습니다.</p>
+  </div>
+  <div class="page-actions">
+    <a class="button" href="../../">메인으로</a>
+    <a class="button button-ghost" href="../../">KS 표준 선택으로</a>
+  </div>
+</section>
+
+<div class="standard-reference hole-tap-layout" id="hole-tap-app">
+  <section class="reference-card">
+    <span class="status-label state-on">나사 선택</span>
+    <h2 id="thread-family-title">미터나사</h2>
+    <label>나사 종류
+      <select id="thread-family">
+        <option value="metric">미터나사 M</option>
+        <option value="pt">PT 관용 테이퍼나사</option>
+      </select>
+    </label>
+    <label><span id="thread-size-label">나사 호칭</span>
+      <select id="thread-size"></select>
+    </label>
+    <div class="thread-preview" aria-label="홀 가공 치수 설명">
+      <svg viewBox="0 0 560 440" role="img">
+        <rect x="25" y="50" width="220" height="155" rx="4" fill="#dce3df"/>
+        <path d="M101 50v58h68V50M101 205v-58h68v58" fill="white" stroke="#173f4f" stroke-width="3"/>
+        <line x1="101" y1="31" x2="169" y2="31" stroke="#2b6f9e" stroke-width="2"/>
+        <text x="88" y="20">통과홀 Ød</text>
+        <text x="92" y="230">통과홀</text>
+        <rect x="300" y="50" width="235" height="155" rx="4" fill="#dce3df"/>
+        <path d="M345 50v52h145V50M390 102v103M445 102v103" fill="white" stroke="#173f4f" stroke-width="3"/>
+        <line x1="345" y1="31" x2="490" y2="31" stroke="#2b6f9e" stroke-width="2"/>
+        <text x="359" y="20">카운터보어 ØD</text>
+        <line x1="510" y1="50" x2="510" y2="102" stroke="#d58621" stroke-width="2"/>
+        <text x="516" y="82">H</text>
+        <text x="355" y="230">렌치볼트 자리파기</text>
+        <rect x="92" y="270" width="376" height="125" rx="4" fill="#dce3df"/>
+        <path d="M165 270l70 58v67h90v-67l70-58z" fill="white" stroke="#173f4f" stroke-width="3"/>
+        <line x1="165" y1="252" x2="395" y2="252" stroke="#2b6f9e" stroke-width="2"/>
+        <text x="223" y="241">카운터싱크 ØD · 90°</text>
+        <path d="M185 275a38 38 0 0 1 28 29" fill="none" stroke="#d58621" stroke-width="2"/>
+        <text x="193" y="292">90°</text><text x="235" y="423">카운터싱크</text>
+      </svg>
+    </div>
+    <p class="reference-note" id="thread-note">통과홀은 보통급 기준입니다. 탭 기초홀은 대표 드릴 치수이며 재질, 나사 유효깊이와 탭 종류에 따라 조정할 수 있습니다.</p>
+  </section>
+
+  <section class="reference-card">
+    <div class="result-heading"><div><span class="status-label">선택 규격</span><h2 id="thread-result-title">M3 가공 치수</h2></div><span class="thread-chip" id="thread-chip">M3</span></div>
+    <div class="spec-table-wrap">
+      <table class="spec-table" aria-label="선택한 홀 및 탭 가공 규격">
+        <thead><tr><th scope="col">항목</th><th scope="col">규격 치수</th><th scope="col">비고</th></tr></thead>
+        <tbody id="thread-results"></tbody>
+      </table>
+    </div>
+    <p class="source-note">미터나사는 KS B ISO 261·273 및 ISO 4762·4032 계열, PT는 KS B ISO 7-1의 Rc/R 대응 치형과 공구 제조사 권장 기초홀을 기준으로 구성했습니다. 생산도면 확정 전 최신 표준과 실제 사용 공구·부품 도면을 대조하세요.</p>
+  </section>
+</div>
+
+<script nonce="">
+(()=>{const metricRows=[
+ {m:'M3',coarse:.5,fine:.35,tap:2.5,fineTap:2.65,clear:3.4,head:5.5,headH:3,cbore:6.5,cboreH:3.5,csink:6.3,nut:5.5,nutH:2.4},
+ {m:'M4',coarse:.7,fine:.5,tap:3.3,fineTap:3.5,clear:4.5,head:7,headH:4,cbore:8,cboreH:4.5,csink:8.4,nut:7,nutH:3.2},
+ {m:'M5',coarse:.8,fine:.5,tap:4.2,fineTap:4.5,clear:5.5,head:8.5,headH:5,cbore:9.5,cboreH:5.5,csink:10.4,nut:8,nutH:4},
+ {m:'M6',coarse:1,fine:.75,tap:5,fineTap:5.2,clear:6.6,head:10,headH:6,cbore:11,cboreH:6.5,csink:12.5,nut:10,nutH:5},
+ {m:'M8',coarse:1.25,fine:1,tap:6.8,fineTap:7,clear:9,head:13,headH:8,cbore:14,cboreH:8.5,csink:16.5,nut:13,nutH:6.5},
+ {m:'M10',coarse:1.5,fine:1.25,tap:8.5,fineTap:8.8,clear:11,head:16,headH:10,cbore:17.5,cboreH:10.5,csink:20.5,nut:16,nutH:8},
+ {m:'M12',coarse:1.75,fine:1.5,tap:10.2,fineTap:10.5,clear:13.5,head:18,headH:12,cbore:20,cboreH:12.5,csink:24.5,nut:18,nutH:10},
+ {m:'M14',coarse:2,fine:1.5,tap:12,fineTap:12.5,clear:15.5,head:21,headH:14,cbore:23,cboreH:14.5,csink:28.5,nut:21,nutH:11},
+ {m:'M16',coarse:2,fine:1.5,tap:14,fineTap:14.5,clear:17.5,head:24,headH:16,cbore:26,cboreH:16.5,csink:32.5,nut:24,nutH:13},
+ {m:'M18',coarse:2.5,fine:2,tap:15.5,fineTap:16,clear:20,head:27,headH:18,cbore:29,cboreH:18.5,csink:36.5,nut:27,nutH:15},
+ {m:'M20',coarse:2.5,fine:2,tap:17.5,fineTap:18,clear:22,head:30,headH:20,cbore:33,cboreH:21,csink:40.5,nut:30,nutH:16}
+];const ptRows=[
+ {size:'PT 1/8',rc:'Rc 1/8',tpi:28,pitch:.907,major:9.728,drill:8.2},
+ {size:'PT 1/4',rc:'Rc 1/4',tpi:19,pitch:1.337,major:13.157,drill:10.9},
+ {size:'PT 3/8',rc:'Rc 3/8',tpi:19,pitch:1.337,major:16.662,drill:14.4},
+ {size:'PT 1/2',rc:'Rc 1/2',tpi:14,pitch:1.814,major:20.955,drill:18},
+ {size:'PT 3/4',rc:'Rc 3/4',tpi:14,pitch:1.814,major:26.441,drill:23.5},
+ {size:'PT 1',rc:'Rc 1',tpi:11,pitch:2.309,major:33.249,drill:29.5},
+ {size:'PT 1 1/4',rc:'Rc 1 1/4',tpi:11,pitch:2.309,major:41.91,drill:38},
+ {size:'PT 1 1/2',rc:'Rc 1 1/2',tpi:11,pitch:2.309,major:47.803,drill:44},
+ {size:'PT 2',rc:'Rc 2',tpi:11,pitch:2.309,major:59.614,drill:56}
+];
+const family=document.getElementById('thread-family'),select=document.getElementById('thread-size'),host=document.getElementById('thread-results'),title=document.getElementById('thread-result-title'),chip=document.getElementById('thread-chip'),familyTitle=document.getElementById('thread-family-title'),sizeLabel=document.getElementById('thread-size-label'),note=document.getElementById('thread-note');
+const mm=v=>`Ø${Number(v).toLocaleString('ko-KR',{maximumFractionDigits:3})} mm`;const item=(label,value,note='—')=>`<tr><th scope="row">${label}</th><td><strong>${value}</strong></td><td>${note}</td></tr>`;
+function fillSizes(){const isPt=family.value==='pt',rows=isPt?ptRows:metricRows;select.innerHTML=rows.map((r,i)=>`<option value="${i}">${isPt?r.size:r.m}</option>`).join('');familyTitle.textContent=isPt?'PT 관용 테이퍼나사':'미터나사';sizeLabel.textContent=isPt?'PT 호칭':'나사 호칭';note.textContent=isPt?'PT는 기존 호칭이며 현재 내부 테이퍼나사는 Rc, 결합 외부 테이퍼나사는 R로 표시합니다. 테이퍼는 지름 기준 1:16입니다.':'통과홀은 보통급 기준입니다. 탭 기초홀은 대표 드릴 치수이며 재질, 나사 유효깊이와 탭 종류에 따라 조정할 수 있습니다.';render();}
+function render(){const isPt=family.value==='pt',r=(isPt?ptRows:metricRows)[Number(select.value)];if(isPt){title.textContent=`${r.size} · ${r.rc} 가공 기준`;chip.textContent='PT';host.innerHTML=item('기존 호칭',r.size,'도면 표기')+item('현재 내부나사 표기',r.rc,'결합 외부나사 R')+item('산수',`${r.tpi} 산/in`,'TPI')+item('피치',`${r.pitch} mm`,'25.4 ÷ TPI')+item('기준 바깥지름',mm(r.major),'기준 평면')+item('권장 기초홀',mm(r.drill),'직선 예비홀')+item('나사산 각도','55°','휘트워스 치형')+item('테이퍼','1 : 16','지름 기준');return;}title.textContent=`${r.m} 가공 치수`;chip.textContent=r.m;host.innerHTML=
+item('일반피치',`${r.coarse} mm`,'P')+item('가는피치',`${r.fine} mm`,'P')+item('일반탭 기초홀',mm(r.tap),'드릴 지름')+item('가는탭 기초홀',mm(r.fineTap),'드릴 지름')+item('통과홀',mm(r.clear),'보통급')+item('렌치볼트 머리',mm(r.head),'머리 지름 dk')+item('머리높이',`${r.headH} mm`,'k')+item('카운터보어',mm(r.cbore),'자리파기 지름')+item('카운터보어 깊이',`${r.cboreH} mm`,'자리파기 깊이')+item('카운터싱크',`${mm(r.csink)} · 90°`,'접시 가공')+item('육각너트',`${r.nut} mm`,'대변 s')+item('너트두께',`${r.nutH} mm`,'m');}
+family.addEventListener('change',fillSizes);select.addEventListener('change',render);fillSizes();})();
+</script>
+
+<div class="reference-card"><p class="source-note">설계 계산과 규격표는 1차 검토용입니다. 실제 제작·발주 전 최신 제조사 자료 및 관련 표준을 확인하세요.</p><button class="button" type="button" onclick="window.print()">인쇄 · PDF 저장</button></div></main><footer class="footer"><strong>ItsnoruLAB Design Tools</strong><span>Public edition · no login / no project database</span></footer></div></body></html>

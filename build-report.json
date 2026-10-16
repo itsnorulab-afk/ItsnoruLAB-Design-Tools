@@ -1,0 +1,115 @@
+{
+  "version": "0.2.0",
+  "pages": [
+    {
+      "slug": "calculators/ballscrew",
+      "bytes": 40342
+    },
+    {
+      "slug": "calculators/servo",
+      "bytes": 40334
+    },
+    {
+      "slug": "calculators/lm",
+      "bytes": 40327
+    },
+    {
+      "slug": "calculators/cylinder",
+      "bytes": 40344
+    },
+    {
+      "slug": "calculators/air-consumption",
+      "bytes": 19200
+    },
+    {
+      "slug": "calculators/cable-chain",
+      "bytes": 8414
+    },
+    {
+      "slug": "calculators/gears/spur",
+      "bytes": 8097
+    },
+    {
+      "slug": "calculators/gears/helical",
+      "bytes": 8943
+    },
+    {
+      "slug": "calculators/gears/timing-pulley",
+      "bytes": 9617
+    },
+    {
+      "slug": "electrical/motor-current",
+      "bytes": 16701
+    },
+    {
+      "slug": "electrical/voltage-drop",
+      "bytes": 16683
+    },
+    {
+      "slug": "electrical/dc-power",
+      "bytes": 16689
+    },
+    {
+      "slug": "electrical/plc-io",
+      "bytes": 16679
+    },
+    {
+      "slug": "electrical/pin-box",
+      "bytes": 16704
+    },
+    {
+      "slug": "standards/o-rings",
+      "bytes": 10440
+    },
+    {
+      "slug": "standards/retaining-rings",
+      "bytes": 15168
+    },
+    {
+      "slug": "standards/surface-roughness",
+      "bytes": 5892
+    },
+    {
+      "slug": "standards/fits",
+      "bytes": 6407
+    },
+    {
+      "slug": "standards/holes-taps",
+      "bytes": 9820
+    },
+    {
+      "slug": "standards/square-tubes",
+      "bytes": 26397
+    },
+    {
+      "slug": "catalog/precision-locknuts",
+      "bytes": 6144
+    },
+    {
+      "slug": "catalog/honed-tubes",
+      "bytes": 20851
+    },
+    {
+      "slug": "catalog/bushings",
+      "bytes": 129574
+    }
+  ],
+  "assets": [
+    "styles.css",
+    "theme.js",
+    "styles/ui-v2.css",
+    "styles/calculators.css",
+    "styles/standards.css",
+    "styles/cable-chain.css",
+    "styles/tube-catalog.css",
+    "styles/bushing-catalog.css",
+    "js/gear-calculator.js",
+    "js/cable-chain.js",
+    "js/tube-catalog.js",
+    "js/bushing-catalog.js",
+    "oring-hole-groove.png",
+    "oring-shaft-groove.png",
+    "pwa-icon.svg"
+  ],
+  "generatedAt": "2026-10-16T15:37:36.512Z"
+}

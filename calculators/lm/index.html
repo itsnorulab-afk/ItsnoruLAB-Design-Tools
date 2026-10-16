@@ -1,0 +1,395 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b5263"><title>calculators/lm · ItsnoruLAB Design Tools</title><link rel="manifest" href="../../manifest.json"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../styles/ui-v2.css"><link rel="stylesheet" href="../../public-design-tools.css"><script defer src="../../theme.js"></script></head><body><div class="site-shell"><header class="app-header"><div class="topbar"><a class="brand" href="../../"><span class="brand-copy"><strong>ItsnoruLAB</strong><small>Design Tools · Public</small></span></a><nav class="global-nav" aria-label="도구"><a href="../../">전체 도구</a><a href="../../calculators/servo/">기계</a><a href="../../electrical/motor-current/">전기</a><a href="../../standards/holes-taps/">규격</a><a href="../../catalog/bushings/">기성품</a></nav></div></header><main>
+
+<section class="page-heading calculator-heading">
+  <div>
+    <p class="eyebrow">ENGINEERING TOOL</p>
+    <h1>LM가이드 선정 계산기</h1>
+    <p>1차 선정 계산기</p>
+  </div>
+  <div class="page-actions">
+    <a class="button" href="../../">메인으로</a>
+    <a class="button button-ghost" href="../../">이전 선택</a>
+  </div>
+</section>
+
+<link rel="stylesheet" href="../../styles/calculators.css?v=0.2.0">
+<div id="automation-calc-app">
+
+  <div class="hero-strip">
+    <p>길이 mm · 힘 kgf(N 병기) · 압력 bar · 계산 결과는 1차 선정용</p>
+    <span class="viz-badge">DC 24V / AC 220V 기본</span>
+  </div>
+
+  <div class="workspace">
+    <section class="card" aria-labelledby="input-title">
+      <div class="panel-title">
+        <h3 id="input-title">입력 조건</h3>
+        <button type="button" class="btn btn-ghost" id="load-example">예제값 불러오기</button>
+      </div>
+      <form id="calculator-form">
+        <div id="input-fields" class="input-grid"></div>
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">계산하기</button>
+          <button type="button" class="btn" id="reset-current">초기화</button>
+        </div>
+      </form>
+      <div id="assumption" class="assumption text-small"></div>
+    </section>
+
+    <section class="results" aria-labelledby="result-title">
+      <div class="card">
+        <div class="panel-title"><h3 id="result-title">계산 결과</h3><span id="result-status" class="status">검토 가능</span></div>
+        <div id="result-hero" class="result-hero"></div>
+        <div id="metric-grid" class="metric-grid" style="margin-top:12px"></div>
+      </div>
+      <div class="card">
+        <div class="panel-title"><h3>계산식·판정 기준</h3></div>
+        <ol id="formula-list" class="formula-list text-small"></ol>
+      </div>
+      <div id="selection-note" class="notice text-small"></div>
+    </section>
+  </div>
+
+  <script nonce="">
+    (() => {
+      const root = document.getElementById('automation-calc-app');
+      const g = 9.80665;
+      const servoCatalog = {"HG-KR053":{"series":"HG-KR","capacityKw":0.05,"ratedTorque":0.16,"maxTorque":0.56,"brakeTorque":0.32,"ratedRpm":3000,"maxRpm":6000,"inertiaKgCm2":0.045,"inertiaLimit":17,"apexMinimum":"AB042"},"HG-KR13":{"series":"HG-KR","capacityKw":0.1,"ratedTorque":0.32,"maxTorque":1.1,"brakeTorque":0.32,"ratedRpm":3000,"maxRpm":6000,"inertiaKgCm2":0.0777,"inertiaLimit":17,"apexMinimum":"AB042"},"HG-KR23":{"series":"HG-KR","capacityKw":0.2,"ratedTorque":0.64,"maxTorque":2.2,"brakeTorque":1.3,"ratedRpm":3000,"maxRpm":6000,"inertiaKgCm2":0.221,"inertiaLimit":26,"apexMinimum":"AB060"},"HG-KR43":{"series":"HG-KR","capacityKw":0.4,"ratedTorque":1.3,"maxTorque":4.5,"brakeTorque":1.3,"ratedRpm":3000,"maxRpm":6000,"inertiaKgCm2":0.371,"inertiaLimit":25,"apexMinimum":"AB060"},"HG-KR73":{"series":"HG-KR","capacityKw":0.75,"ratedTorque":2.4,"maxTorque":8.4,"brakeTorque":2.4,"ratedRpm":3000,"maxRpm":6000,"inertiaKgCm2":1.26,"inertiaLimit":17,"apexMinimum":"AB090"},"HG-SR52":{"series":"HG-SR","capacityKw":0.5,"ratedTorque":2.4,"maxTorque":7.2,"brakeTorque":8.5,"ratedRpm":2000,"maxRpm":3000,"inertiaKgCm2":7.26,"inertiaLimit":15,"apexMinimum":"AB090"},"HG-SR102":{"series":"HG-SR","capacityKw":1,"ratedTorque":4.8,"maxTorque":14.3,"brakeTorque":8.5,"ratedRpm":2000,"maxRpm":3000,"inertiaKgCm2":11.6,"inertiaLimit":15,"apexMinimum":"AB090"},"HG-SR152":{"series":"HG-SR","capacityKw":1.5,"ratedTorque":7.2,"maxTorque":21.5,"brakeTorque":8.5,"ratedRpm":2000,"maxRpm":3000,"inertiaKgCm2":16,"inertiaLimit":15,"apexMinimum":"AB090"},"HG-SR202":{"series":"HG-SR","capacityKw":2,"ratedTorque":9.5,"maxTorque":28.6,"brakeTorque":44,"ratedRpm":2000,"maxRpm":3000,"inertiaKgCm2":46.8,"inertiaLimit":15,"apexMinimum":"AB115"},"HG-SR352":{"series":"HG-SR","capacityKw":3.5,"ratedTorque":16.7,"maxTorque":50.1,"brakeTorque":44,"ratedRpm":2000,"maxRpm":3000,"inertiaKgCm2":78.6,"inertiaLimit":15,"apexMinimum":"AB142"},"HG-SR502":{"series":"HG-SR","capacityKw":5,"ratedTorque":23.9,"maxTorque":71.6,"brakeTorque":44,"ratedRpm":2000,"maxRpm":3000,"inertiaKgCm2":99.7,"inertiaLimit":15,"apexMinimum":"AB142"},"HG-SR702":{"series":"HG-SR","capacityKw":7,"ratedTorque":33.4,"maxTorque":100,"brakeTorque":44,"ratedRpm":2000,"maxRpm":3000,"inertiaKgCm2":151,"inertiaLimit":15,"apexMinimum":"AB180"}};
+      const apexAbCatalog = [{"model":"AB042","nominalTorque":14},{"model":"AB060","nominalTorque":40},{"model":"AB090","nominalTorque":100},{"model":"AB115","nominalTorque":230},{"model":"AB142","nominalTorque":450},{"model":"AB180","nominalTorque":900},{"model":"AB220","nominalTorque":1500}];
+      const apexAbRatios = [3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,60,70,80,90,100,120,140,160,180,200];
+      const servoAmplifierMap = {"HG-KR053":"10","HG-KR13":"10","HG-KR23":"20","HG-KR43":"40","HG-KR73":"70","HG-SR52":"60","HG-SR102":"100","HG-SR152":"200","HG-SR202":"200","HG-SR352":"350","HG-SR502":"500","HG-SR702":"700"};
+      const ballScrewCatalog = [{"model":"BTK1006V-2.6","series":"BTK","diameter":10,"lead":6,"rootDiameter":7.8,"ca":2.8,"c0a":4.9,"dn":100000,"maxLength":500},{"model":"BTK1208V-2.6","series":"BTK","diameter":12,"lead":8,"rootDiameter":9.7,"ca":3.8,"c0a":6.8,"dn":100000,"maxLength":680},{"model":"BTK1404V-3.6","series":"BTK","diameter":14,"lead":4,"rootDiameter":11.5,"ca":5.5,"c0a":11.5,"dn":100000,"maxLength":890},{"model":"BTK1405V-2.6","series":"BTK","diameter":14,"lead":5,"rootDiameter":11.2,"ca":5,"c0a":11.4,"dn":100000,"maxLength":890},{"model":"BLK1510-5.6","series":"BLK","diameter":15,"lead":10,"rootDiameter":12.5,"ca":14.3,"c0a":27.8,"dn":70000,"maxLength":1100},{"model":"BLK2525-7.2","series":"BLK","diameter":25,"lead":25,"rootDiameter":21.9,"ca":21.9,"c0a":69.9,"dn":70000,"maxLength":2400},{"model":"BLK3232-3.6","series":"BLK","diameter":32,"lead":32,"rootDiameter":28.3,"ca":17.3,"c0a":53.9,"dn":70000,"maxLength":3200},{"model":"BLK3232-7.2","series":"BLK","diameter":32,"lead":32,"rootDiameter":28.3,"ca":31.3,"c0a":107.8,"dn":70000,"maxLength":3200},{"model":"BLK3620-5.6","series":"BLK","diameter":36,"lead":20,"rootDiameter":31.2,"ca":39.8,"c0a":121.7,"dn":70000,"maxLength":3700},{"model":"BLK3624-5.6","series":"BLK","diameter":36,"lead":24,"rootDiameter":30.7,"ca":46.2,"c0a":137.4,"dn":70000,"maxLength":3700},{"model":"BLK3636-7.2","series":"BLK","diameter":36,"lead":36,"rootDiameter":31.7,"ca":40.6,"c0a":141.1,"dn":70000,"maxLength":3700},{"model":"BLK4040-7.2","series":"BLK","diameter":40,"lead":40,"rootDiameter":35.2,"ca":51.1,"c0a":179.6,"dn":70000,"maxLength":4300},{"model":"BLK5050-7.2","series":"BLK","diameter":50,"lead":50,"rootDiameter":44.1,"ca":76.3,"c0a":280.7,"dn":70000,"maxLength":5800},{"model":"WTF1520-6","series":"WTF","diameter":15,"lead":20,"rootDiameter":12.5,"ca":10.1,"c0a":28.5,"dn":70000,"maxLength":1000,"permissibleRpm":4440},{"model":"WTF2040-2","series":"WTF","diameter":20,"lead":40,"rootDiameter":17.5,"ca":5.4,"c0a":13.6,"dn":70000,"maxLength":1500,"permissibleRpm":4440},{"model":"WTF2040-3","series":"WTF","diameter":20,"lead":40,"rootDiameter":17.5,"ca":6.6,"c0a":17.2,"dn":70000,"maxLength":1500,"permissibleRpm":4440},{"model":"WTF2550-3","series":"WTF","diameter":25,"lead":50,"rootDiameter":21.9,"ca":10.4,"c0a":26.9,"dn":70000,"maxLength":2000,"permissibleRpm":3370},{"model":"WTF3060-3","series":"WTF","diameter":30,"lead":60,"rootDiameter":26.4,"ca":14.5,"c0a":38.9,"dn":70000,"maxLength":3000,"permissibleRpm":2690},{"model":"WTF4080-3","series":"WTF","diameter":40,"lead":80,"rootDiameter":35.2,"ca":24.3,"c0a":69.2,"dn":70000,"maxLength":4000,"permissibleRpm":2240}];
+      const lmGuideCatalog = [{"model":"HSR15C","series":"HSR","size":15,"block":"C","c":10.9,"c0":15.7},{"model":"HSR15LC","series":"HSR","size":15,"block":"LC","c":14.2,"c0":22.9},{"model":"HSR20C","series":"HSR","size":20,"block":"C","c":19.8,"c0":27.4},{"model":"HSR20LC","series":"HSR","size":20,"block":"LC","c":23.9,"c0":35.8},{"model":"HSR25C","series":"HSR","size":25,"block":"C","c":27.6,"c0":36.4},{"model":"HSR25LC","series":"HSR","size":25,"block":"LC","c":35.2,"c0":51.6},{"model":"HSR30C","series":"HSR","size":30,"block":"C","c":40.5,"c0":53.7},{"model":"HSR30LC","series":"HSR","size":30,"block":"LC","c":48.9,"c0":70.2},{"model":"HSR35C","series":"HSR","size":35,"block":"C","c":53.9,"c0":70.2},{"model":"HSR35LC","series":"HSR","size":35,"block":"LC","c":65,"c0":91.7},{"model":"HSR45C","series":"HSR","size":45,"block":"C","c":82.2,"c0":101},{"model":"HSR45LC","series":"HSR","size":45,"block":"LC","c":100,"c0":135},{"model":"SR15V","series":"SR","size":15,"block":"V","c":9.1,"c0":11.7},{"model":"SR15W","series":"SR","size":15,"block":"W","c":13.8,"c0":20.5},{"model":"SR20V","series":"SR","size":20,"block":"V","c":13.4,"c0":17.2},{"model":"SR20W","series":"SR","size":20,"block":"W","c":19.2,"c0":28.6},{"model":"SR25V","series":"SR","size":25,"block":"V","c":21.6,"c0":26.8},{"model":"SR25W","series":"SR","size":25,"block":"W","c":30.9,"c0":44.7},{"model":"SR30V","series":"SR","size":30,"block":"V","c":29.5,"c0":34.4},{"model":"SR30W","series":"SR","size":30,"block":"W","c":45.6,"c0":64.4},{"model":"SR35V","series":"SR","size":35,"block":"V","c":40.9,"c0":46.7},{"model":"SR35W","series":"SR","size":35,"block":"W","c":60.4,"c0":81.8},{"model":"SR45W","series":"SR","size":45,"block":"W","c":80.4,"c0":107}];
+      const cfg = {
+        ballscrew: {
+          title: '볼스크류',
+          assumption: '축 방향 하중, 허용 회전수, 오일러 좌굴, 기본 정격수명(L10)을 함께 검토합니다. 나사축은 강재 중실축으로 가정합니다.',
+          fields: [
+            ['axis','설치 방향','select','', 'horizontal', [['horizontal','수평'],['vertical','수직 상승']]],
+            ['ballSeries','THK 형번 계열','select','', 'AUTO', [['AUTO','자동 선정'],['BLK','BLK · 대리드'],['BTK','BTK · 표준리드'],['WTF','WTF · 초대리드']]],
+            ['mass','이동 질량','number','kg','200'], ['speed','최대 속도','number','mm/s','500'],
+            ['accelTime','가속 시간','number','s','0.5'], ['lead','리드','number','mm','32'],
+            ['eff','효율','number','%','90'], ['friction','마찰계수','number','μ','0.01'],
+            ['external','외력','number','kgf','0'], ['stroke','스트로크','number','mm','500'],
+            ['freeLength','지지점 간 거리','number','mm','800'], ['rootDia','나사축 골지름','number','mm','26'],
+            ['support','지지 조건','select','', 'fixed-supported', [['fixed-free','고정-자유'],['supported-supported','단순-단순'],['fixed-supported','고정-지지'],['fixed-fixed','고정-고정']]],
+            ['dynamicRating','직접 입력 동정격 Ca','number','kgf','3200'], ['targetLife','목표 수명','number','km','20000'], ['safety','좌굴 안전율','number','-','2']
+          ]
+        },
+        servo: {
+          title: '서보모터',
+          assumption: '선택한 Mitsubishi HG-KR/HG-SR 사양과 구동방식을 적용합니다. APEX AB는 모터 취부 최소 크기와 출력 토크를 함께 비교한 1차 선정입니다.',
+          fields: [
+            ['servoSeries','서보 시리즈','select','', 'HG-KR', [['HG-KR','HG-KR (저관성·소용량)'],['HG-SR','HG-SR (중관성·중용량)']]],
+            ['motorModel','서보 형번','select','', 'HG-KR73', [['HG-KR053','HG-KR053 · 0.05 kW'],['HG-KR13','HG-KR13 · 0.1 kW'],['HG-KR23','HG-KR23 · 0.2 kW'],['HG-KR43','HG-KR43 · 0.4 kW'],['HG-KR73','HG-KR73 · 0.75 kW']]],
+            ['controlInterface','앰프 제어방식','select','', 'A', [['A','MR-J4-A · 범용 펄스/아날로그'],['B','MR-J4-B · SSCNET III/H']]],
+            ['powerPhase','주회로 전원','select','', '3', [['3','삼상 AC 200~240V'],['1','단상 AC 200~240V']]],
+            ['brakeUse','전자브레이크','select','', 'auto', [['auto','자동 · 수직축 적용'],['yes','적용'],['no','미적용']]],
+            ['cableLength','케이블 길이','select','m', '5', [['2','2 m'],['5','5 m'],['10','10 m'],['20','20 m'],['30','30 m']]],
+            ['gearboxUse','APEX AB 감속기','select','', 'no', [['no','미사용'],['yes','사용']]],
+            ['gearRatio','감속비(모터:출력)','number',':1','5'],
+            ['driveType','구동방식','select','', 'ballscrew', [['ballscrew','볼스크류'],['belt','타이밍벨트'],['rack','기어(랙·피니언)']]],
+            ['axis','설치 방향','select','', 'horizontal', [['horizontal','수평'],['vertical','수직 상승']]],
+            ['mass','이동 질량','number','kg','55'], ['speed','최대 속도','number','mm/s','500'],
+            ['accelTime','가속 시간','number','s','0.3'], ['decelTime','감속 시간','number','s','0.3'],
+            ['stroke','이동 거리','number','mm','500'], ['dwell','정지 시간','number','s','1'],
+            ['eff','기계 효율','number','%','90'], ['friction','마찰계수','number','μ','0.01'],
+            ['external','외력','number','kgf','0'],
+            ['lead','볼스크류 리드','number','mm/rev','20'], ['screwDia','스크류 축경','number','mm','20'],
+            ['screwLength','스크류 길이','number','mm','1000'],
+            ['beltPitch','벨트 피치','select','', '5', [['3','S3M · 3 mm'],['5','S5M · 5 mm'],['8','S8M · 8 mm']]],
+            ['beltTeeth','구동 풀리 잇수','number','T','24'],
+            ['gearModule','피니언 모듈','number','m','2'], ['gearTeeth','피니언 잇수','number','T','20']
+          ]
+        },
+        lm: {
+          title: 'LM가이드',
+          assumption: '2열 배치의 정적 등가하중과 피치·롤 모멘트를 단순 분배해 블록 최대하중을 계산합니다. 실제 형상은 제조사 선정 프로그램으로 최종 확인해야 합니다.',
+          fields: [
+            ['mass','이동 질량','number','kg','500'], ['rails','레일 수','number','열','2'],
+            ['lmSeries','THK LM 계열','select','', 'AUTO', [['AUTO','자동 선정'],['HSR','HSR · 4방향 등하중'],['SR','SR · 레이디얼형']]],
+            ['blocks','레일당 블록','number','개','2'], ['accel','수평 가속도','number','m/s²','2'],
+            ['shock','충격계수 fw','number','-','1.5'], ['distribution','하중분배계수','number','-','1.2'],
+            ['cogHeight','무게중심 높이','number','mm','300'], ['blockSpan','블록 중심간 거리','number','mm','600'],
+            ['lateralOffset','좌우 편심','number','mm','0'], ['railSpan','레일 중심간 거리','number','mm','500'],
+            ['dynamicRating','블록 동정격 C','number','kgf','6150'], ['staticRating','블록 정정격 C0','number','kgf','9300'],
+            ['targetLife','목표 수명','number','km','20000']
+          ]
+        },
+        cylinder: {
+          title: '공압 실린더',
+          assumption: '공급압은 실린더 입구의 실제 동작압으로 사용합니다. 마찰·가속·외력을 합산한 뒤 안전율을 적용하고, 왕복 공기소비량을 표준상태로 환산합니다.',
+          fields: [
+            ['axis','설치 방향','select','', 'horizontal', [['horizontal','수평'],['vertical-up','수직 상승'],['vertical-down','수직 하강 제어']]],
+            ['motion','사용 방향','select','', 'push', [['push','전진(밀기)'],['pull','후진(당기기)']]],
+            ['mass','이동 질량','number','kg','500'], ['speed','동작 속도','number','mm/s','50'],
+            ['accelTime','가속 시간','number','s','0.2'], ['friction','마찰계수','number','μ','0.05'],
+            ['external','추가 저항','number','kgf','0'], ['pressure','실제 공급압','number','bar','5'],
+            ['bore','실린더 내경','select','mm','63', [['6','Ø6'],['8','Ø8'],['10','Ø10'],['12','Ø12'],['16','Ø16'],['20','Ø20'],['25','Ø25'],['32','Ø32'],['40','Ø40'],['50','Ø50'],['63','Ø63'],['80','Ø80'],['100','Ø100'],['125','Ø125'],['140','Ø140'],['160','Ø160'],['200','Ø200'],['250','Ø250'],['320','Ø320']]], ['rod','대표 로드경(자동)','number','mm','20'],
+            ['stroke','스트로크','number','mm','15'], ['cycles','사이클','number','회/min','10'],
+            ['safety','안전율','number','-','1.5']
+          ]
+        }
+      };
+
+      let active = "lm";
+      const fieldHost = root.querySelector('#input-fields');
+      const form = root.querySelector('#calculator-form');
+      const fmt = (n, d=2) => Number.isFinite(n) ? n.toLocaleString('ko-KR',{maximumFractionDigits:d}) : '-';
+      const num = id => Number(root.querySelector('#f-' + id)?.value || 0);
+      const val = id => root.querySelector('#f-' + id)?.value;
+      const standardRodByBore={6:3,8:4,10:4,12:6,16:6,20:8,25:10,32:12,40:16,50:20,63:20,80:25,100:30,125:32,140:36,160:40,200:50,250:60,320:80};
+
+      function fieldMarkup(f) {
+        const [id,label,type,unit,def,options] = f;
+        const labelHtml = `<label class="form-label" for="f-${id}"><span>${label}</span><span class="unit">${unit}</span></label>`;
+        if (type === 'select') {
+          return `<div class="field" data-field="${id}">${labelHtml}<select class="form-control" id="f-${id}">${options.map(o => `<option value="${o[0]}" ${o[0]===def?'selected':''}>${o[1]}</option>`).join('')}</select></div>`;
+        }
+        return `<div class="field" data-field="${id}">${labelHtml}<input class="form-control" id="f-${id}" type="number" step="any" min="0" value="${def}" required></div>`;
+      }
+
+      function refreshServoFields(resetModel=false) {
+        if(active!=='servo') return;
+        const series=val('servoSeries');
+        const modelSelect=root.querySelector('#f-motorModel');
+        if(resetModel || !servoCatalog[modelSelect.value] || servoCatalog[modelSelect.value].series!==series){
+          const models=Object.entries(servoCatalog).filter(([,spec])=>spec.series===series);
+          modelSelect.innerHTML=models.map(([model,spec])=>`<option value="${model}">${model} · ${spec.capacityKw} kW</option>`).join('');
+          modelSelect.value=models.at(-1)?.[0]||'';
+        }
+        const drive=val('driveType');
+        const visible=new Set(['servoSeries','motorModel','controlInterface','powerPhase','brakeUse','cableLength','gearboxUse','driveType','axis','mass','speed','accelTime','decelTime','stroke','dwell','eff','friction','external']);
+        if(val('gearboxUse')==='yes')visible.add('gearRatio');
+        if(drive==='ballscrew')['lead','screwDia','screwLength'].forEach(id=>visible.add(id));
+        if(drive==='belt')['beltPitch','beltTeeth'].forEach(id=>visible.add(id));
+        if(drive==='rack')['gearModule','gearTeeth'].forEach(id=>visible.add(id));
+        fieldHost.querySelectorAll('[data-field]').forEach(field=>{
+          const hidden=!visible.has(field.dataset.field);
+          field.hidden=hidden;
+          const control=field.querySelector('input,select');
+          if(control)control.disabled=hidden;
+        });
+      }
+
+      function refreshCylinderRod() {
+        if(active!=='cylinder')return;
+        const rod=root.querySelector('#f-rod');
+        if(!rod)return;
+        rod.value=standardRodByBore[num('bore')]||'';
+        rod.readOnly=true;
+        rod.title='대표 로드경입니다. 실제 값은 제조사·시리즈·로드 형식의 최신 도면을 확인하세요.';
+      }
+
+      function renderFields() {
+        const c = cfg[active];
+        root.querySelector('#input-title').textContent = c.title + ' 입력 조건';
+        root.querySelector('#assumption').textContent = c.assumption;
+        fieldHost.innerHTML = c.fields.map(fieldMarkup).join('');
+        refreshServoFields();
+        refreshCylinderRod();
+        calculate();
+      }
+
+      function setResults(hero, metrics, formulas, note, pass, utilization) {
+        root.querySelector('#result-hero').innerHTML = `<div><span class="text-small">${hero.label}</span><div class="viz-stat-value">${hero.value}</div></div><span class="viz-badge">${hero.sub}</span>`;
+        root.querySelector('#metric-grid').innerHTML = metrics.map(m => `<div class="metric"><span class="text-small">${m[0]}${m[0]==='부하 관성비'?'<button type="button" class="field-help metric-help" data-help-term="부하 관성비" aria-label="부하 관성비 도움말">?</button>':''}</span><strong>${m[1]}</strong>${m[2] !== undefined ? `<div class="progress-track"><div class="progress-fill ${m[2]>100?'warn':''}" style="width:${Math.min(m[2],100)}%"></div></div>` : ''}</div>`).join('');
+        root.querySelector('#formula-list').innerHTML = formulas.map(f => `<li>${f}</li>`).join('');
+        root.querySelector('#selection-note').innerHTML = `<strong>최종 선정안</strong><br>${note}`;
+        const status = root.querySelector('#result-status');
+        status.textContent = pass ? '1차 선정 · 제조사 확인 필요' : '조건 초과 · 재선정 필요';
+        status.className = 'status' + (pass ? '' : ' warn');
+      }
+
+      function calcBallscrew() {
+        const mass=num('mass'), speed=num('speed'), ta=Math.max(num('accelTime'),.001), lead=num('lead'), eta=num('eff')/100;
+        const a=speed/1000/ta;
+        const axialN=(val('axis')==='vertical' ? mass*(g+a) : mass*a + num('friction')*mass*g) + num('external')*g;
+        const axialKgf=axialN/g;
+        const rpm=speed/lead*60;
+        const torque=axialN*(lead/1000)/(2*Math.PI*Math.max(eta,.01));
+        const requiredCa=axialKgf*Math.cbrt(Math.max(num('targetLife'),1)/Math.max(lead,1));
+        const series=val('ballSeries');
+        const catalogCandidates=ballScrewCatalog.filter(x=>(series==='AUTO'||x.series===series)&&Math.abs(x.lead-lead)<.01)
+          .map(x=>({...x,caKgf:x.ca*1000/g,c0aKgf:x.c0a*1000/g,dnRpm:x.dn/Math.max(x.diameter,1)}))
+          .filter(x=>rpm<=Math.min(x.permissibleRpm||Infinity,x.dnRpm)&&num('freeLength')<=x.maxLength&&requiredCa<=x.caKgf)
+          .sort((a,b)=>a.diameter-b.diameter||a.ca-b.ca);
+        const selected=catalogCandidates[0]||null;
+        const rootDiameter=selected?selected.rootDiameter:num('rootDia'),dynamicRating=selected?selected.caKgf:num('dynamicRating');
+        const d=rootDiameter/1000, L=num('freeLength')/1000, E=206e9, rho=7850;
+        const area=Math.PI*d*d/4, I=Math.PI*Math.pow(d,4)/64;
+        const beta={ 'fixed-free':1.875, 'supported-supported':Math.PI, 'fixed-supported':3.927, 'fixed-fixed':4.730 }[val('support')];
+        const K={ 'fixed-free':2, 'supported-supported':1, 'fixed-supported':.699, 'fixed-fixed':.5 }[val('support')];
+        const critical=0.8*(60/(2*Math.PI))*(beta*beta/(L*L))*Math.sqrt(E*I/(rho*area));
+        const bucklingN=(Math.PI*Math.PI*E*I/Math.pow(K*L,2))/Math.max(num('safety'),1);
+        const lifeKm=Math.pow(dynamicRating/Math.max(axialKgf,.001),3)*lead;
+        const rpmUse=rpm/critical*100, bucklingUse=axialN/bucklingN*100;
+        const catalogPass=Boolean(selected),pass=rpmUse<=80 && bucklingUse<=100 && catalogPass;
+        const modelText=selected?`${selected.model} · Ca ${fmt(selected.caKgf,0)} kgf`:'등록 형번 없음 · 직접 검토';
+        setResults(
+          {label:'필요 구동 토크',value:`${fmt(torque)} N·m`,sub:`축하중 ${fmt(axialKgf,1)} kgf`},
+          [['THK 1차 선정',modelText],['필요 회전수',`${fmt(rpm,0)} rpm`,rpmUse],['허용 회전수(0.8 반영)',`${fmt(critical,0)} rpm`],['좌굴 허용하중',`${fmt(bucklingN/g,0)} kgf`,bucklingUse],['필요 동정격 Ca',`${fmt(requiredCa,0)} kgf`],['예상 L10 수명',`${fmt(lifeKm,0)} km`,num('targetLife')/Math.max(lifeKm,1)*100]],
+          [`가속도 a = v / t = ${fmt(a)} m/s²`, `축하중 Fa = ${fmt(axialN,0)} N (${fmt(axialKgf,1)} kgf)`, `필요 Ca = Fa × ∛(목표수명 / Lead)`, `구동 토크 T = Fa × Lead / (2π × η)`, `수명 L10 = (Ca / Fa)³ × Lead`],
+          pass ? `<strong>${selected.model}</strong>을 1차 선정했습니다. 축경 ${selected.diameter} mm, 리드 ${selected.lead} mm, 골지름 ${selected.rootDiameter} mm입니다. 정격 토크 ${fmt(torque*1.5)} N·m 이상을 기준으로 하고, 실제 제작 길이·축단·정밀도·예압·서포트유닛을 THK에 최종 확인하세요.` : `${catalogPass?'허용 회전수 또는 좌굴 기준을 초과합니다.':'요청 리드·회전수·길이·수명을 동시에 만족하는 등록 THK BLK/BTK/WTF 형번이 없습니다.'} 축경·리드·지지거리 또는 목표수명을 조정하세요.`,
+          pass
+        );
+      }
+
+      function calcServo() {
+        const motor=servoCatalog[val('motorModel')];
+        if(!motor)return;
+        const amplifierCapacity=servoAmplifierMap[val('motorModel')],interfaceType=val('controlInterface'),phase=val('powerPhase');
+        const amplifier=`MR-J4-${amplifierCapacity}${interfaceType}`;
+        const brakeApplied=val('brakeUse')==='yes'||(val('brakeUse')==='auto'&&val('axis')==='vertical');
+        const orderMotor=`${val('motorModel')}${brakeApplied?'B':''}`,cableLength=num('cableLength');
+        const phaseCompatible=phase!=='1'||Number(amplifierCapacity)<=70;
+        const encoderCable=`MR-J3ENSCBL${cableLength}M-L`;
+        const powerConnection=motor.series==='HG-KR'?`MR-PWS1CBL${cableLength}M-A1-L 계열`:(val('motorModel')==='HG-SR702'?'MR-PWCNS3 + 권장 동력선':'MR-PWCNS4 + 권장 동력선');
+        const brakeConnection=brakeApplied?(motor.series==='HG-KR'?`MR-BKS1CBL${cableLength}M-A1-L 계열`:'브레이크 커넥터 + DC 24V 전용전원'):'미적용';
+        const mass=num('mass'), speed=num('speed')/1000, ta=Math.max(num('accelTime'),.001), td=Math.max(num('decelTime'),.001);
+        const gearboxUsed=val('gearboxUse')==='yes', ratio=gearboxUsed?Math.max(num('gearRatio'),.01):1;
+        const mechanismEfficiency=Math.max(num('eff')/100,.01), gearboxEfficiency=gearboxUsed?(ratio<=10?.97:.94):1;
+        const eta=mechanismEfficiency*gearboxEfficiency, drive=val('driveType');
+        let travelPerRev, rotatingInertia=0, driveLabel;
+        if(drive==='ballscrew'){
+          travelPerRev=num('lead')/1000;driveLabel=`볼스크류 Lead ${fmt(num('lead'),1)} mm`;
+          const dia=num('screwDia')/1000,len=num('screwLength')/1000;
+          rotatingInertia=7850*Math.PI*Math.pow(dia,4)*len/32;
+        }else if(drive==='belt'){
+          travelPerRev=num('beltPitch')*num('beltTeeth')/1000;driveLabel=`S${num('beltPitch')}M · ${fmt(num('beltTeeth'),0)}T 풀리`;
+        }else{
+          travelPerRev=Math.PI*num('gearModule')*num('gearTeeth')/1000;driveLabel=`랙·피니언 m${fmt(num('gearModule'),1)} · ${fmt(num('gearTeeth'),0)}T`;
+        }
+        if(!(travelPerRev>0))return;
+        const steadyN=(val('axis')==='vertical' ? mass*g : num('friction')*mass*g) + num('external')*g;
+        const outputLoadTorque=steadyN*travelPerRev/(2*Math.PI*mechanismEfficiency);
+        const loadTorque=outputLoadTorque/(ratio*gearboxEfficiency);
+        const jLinear=mass*Math.pow(travelPerRev/(2*Math.PI),2);
+        const jRef=(jLinear+rotatingInertia)/(ratio*ratio);
+        const jMotor=motor.inertiaKgCm2*1e-4;
+        const alpha=(speed/ta)*(2*Math.PI/travelPerRev)*ratio;
+        const accelTorque=(jRef+jMotor)*alpha;
+        const peak=loadTorque+accelTorque;
+        const decel=Math.abs(loadTorque-accelTorque);
+        const rpm=(speed/travelPerRev)*60*ratio;
+        const accelDist=speed*ta/2, decelDist=speed*td/2, stroke=num('stroke')/1000;
+        const run=Math.max(0,(stroke-accelDist-decelDist)/Math.max(speed,.001));
+        const cycle=ta+run+td+num('dwell');
+        const rms=Math.sqrt((peak*peak*ta+loadTorque*loadTorque*run+decel*decel*td)/Math.max(cycle,.001));
+        const inertiaRatio=jRef/Math.max(jMotor,1e-9);
+        const omega=rpm*2*Math.PI/60,regenEnergy=.5*(jRef+jMotor)*omega*omega,regenPower=regenEnergy/Math.max(cycle,.001);
+        const externalRegenReview=regenPower>motor.capacityKw*1000*.08||decel>motor.ratedTorque;
+        const rpmUse=rpm/motor.ratedRpm*100, peakUse=peak/motor.maxTorque*100, rmsUse=rms/motor.ratedTorque*100;
+        const holdingForceN=(val('axis')==='vertical'?mass*g:0)+Math.max(num('external'),0)*g;
+        const holdingTorque=holdingForceN*travelPerRev/(2*Math.PI*eta*ratio);
+        const brakeSafetyFactor=1.5,brakeDesignTorque=holdingTorque*brakeSafetyFactor;
+        const brakeUse=brakeDesignTorque/Math.max(motor.brakeTorque,.001)*100;
+        const holdingRequired=holdingTorque>1e-9;
+        const brakePass=!holdingRequired||(brakeApplied&&brakeUse<=100);
+        const brakeResult=!holdingRequired?'유지 대상 없음 · 0 %':`${brakeApplied?(brakePass?'유지 가능':'용량 부족'):'미적용 · 유지 불가'} · ${fmt(brakeUse,1)} %`;
+        const requiredOutputPeak=peak*ratio*gearboxEfficiency;
+        let gearbox=null,gearboxPass=true,ratioPass=true;
+        if(gearboxUsed){
+          ratioPass=apexAbRatios.includes(ratio);
+          const minimumIndex=apexAbCatalog.findIndex(item=>item.model===motor.apexMinimum);
+          gearbox=apexAbCatalog.find((item,index)=>index>=minimumIndex&&item.nominalTorque>=requiredOutputPeak*1.2)||null;
+          gearboxPass=ratioPass&&Boolean(gearbox);
+        }
+        const pass=rpmUse<=100 && peakUse<=100 && rmsUse<=100 && inertiaRatio<=motor.inertiaLimit && gearboxPass && phaseCompatible && brakePass;
+        const gearboxText=gearboxUsed?(gearbox?`${gearbox.model}-${ratio} · 정격 ${gearbox.nominalTorque} N·m`:(ratioPass?'AB220 범위 초과':'비표준 감속비')):'미적용';
+        const brakeNote=!holdingRequired?'수평축이며 별도 외력이 없어 전자브레이크 유지용량 판정 대상이 아닙니다.':brakeApplied?`전자브레이크 유지 부하율은 ${fmt(brakeUse,1)}%입니다(설계 유지토크 ${fmt(brakeDesignTorque,2)} N·m / 정마찰토크 ${fmt(motor.brakeTorque,2)} N·m). ${brakePass?'정지 유지가 가능합니다.':'브레이크 용량이 부족하므로 감속비 또는 서보 용량을 높이세요.'}`:'정지 유지토크가 필요하지만 브레이크 미적용이므로 B형 모터를 선택해야 합니다.';
+        setResults(
+          {label:`${orderMotor} 시스템 판정`,value:pass?'적용 가능':'재선정 필요',sub:`${amplifier} · RMS ${fmt(rms)} N·m`},
+          [['서보·앰프',`${orderMotor} + ${amplifier}`],['동력·엔코더',`${powerConnection} / ${encoderCable}`],['브레이크 배선',brakeConnection],['브레이크 유지 부하율',brakeResult,holdingRequired?brakeUse:0],['회생 검토',externalRegenReview?`외부 옵션 검토 · ${fmt(regenPower,1)} W`:`내장저항 검토 · ${fmt(regenPower,1)} W`],['구동방식',driveLabel],['모터 회전수',`${fmt(rpm,0)} / ${motor.ratedRpm} rpm`,rpmUse],['정격 토크 부하율',`${fmt(rmsUse,1)} %`,rmsUse],['최대 토크 부하율',`${fmt(peakUse,1)} %`,peakUse],['부하 관성비',`${fmt(inertiaRatio,1)} : 1`,inertiaRatio/motor.inertiaLimit*100],['APEX AB 선정',gearboxText,gearboxUsed?(gearboxPass?Math.min(requiredOutputPeak*1.2/(gearbox?.nominalTorque||1)*100,100):101):0]],
+          [`1회전 이송량 = ${fmt(travelPerRev*1000,2)} mm/rev`, `모터 회전수 = v / 1회전 이송량 × 60 × 감속비`, `환산관성 J = {m(이송량/2π)² + 회전체 관성} / i²`, `RMS 토크 = √(ΣT²t / 1사이클)`, `브레이크 유지 부하율 = 정지 유지토크 × 1.5 / 정마찰토크 × 100 = ${fmt(brakeUse,1)} %`, `회생에너지 = 1/2 × J × ω²`, `APEX AB 요구 출력토크 = 최대 모터토크 × i × η × 1.2`],
+          pass ? `<strong>${orderMotor} + ${amplifier} + ${gearboxText}</strong>을 1차 선정했습니다. ${driveLabel} 기준이며 케이블은 ${cableLength} m입니다. ${brakeNote} ${externalRegenReview?'감속 에너지 때문에 외부 회생옵션을 추가 검토하세요.':'앰프 내장 회생저항의 허용 회생빈도를 확인하세요.'} 감속기 어댑터·축경·백래시와 케이블 커넥터 방향은 제조사 선정도구에서 최종 확인하세요.` : `${phaseCompatible?'':'선택한 용량은 단상 입력 대상이 아니므로 삼상 AC 200V로 변경해야 합니다. '}${ratioPass?'':'입력한 감속비는 APEX AB 표준 감속비가 아닙니다. '}${brakePass?'':brakeNote+' '}회전수·토크·관성비·감속기 정격을 다시 확인하세요.`,
+          pass
+        );
+      }
+
+      function calcLm() {
+        const mass=num('mass'), rails=Math.max(num('rails'),1), blocks=Math.max(num('blocks'),1), total=rails*blocks;
+        const fw=num('shock'), fd=num('distribution'), weight=mass;
+        const inertiaKgf=mass*num('accel')/g;
+        const base=weight*fw*fd/total;
+        const pitchAdd=inertiaKgf*num('cogHeight')/Math.max(num('blockSpan')*rails,1)*fw;
+        const rollAdd=weight*Math.abs(num('lateralOffset'))/Math.max(num('railSpan')*blocks,1)*fw;
+        const pMax=base+pitchAdd+rollAdd;
+        const target=num('targetLife');
+        const requiredC=pMax*Math.cbrt(Math.max(target,50)/50),requiredC0=pMax*2,series=val('lmSeries');
+        const lmCandidates=lmGuideCatalog.map(x=>({...x,cKgf:x.c*1000/g,c0Kgf:x.c0*1000/g}))
+          .filter(x=>(series==='AUTO'||x.series===series)&&x.cKgf>=requiredC&&x.c0Kgf>=requiredC0)
+          .sort((a,b)=>a.size-b.size||a.c-b.c);
+        const selected=lmCandidates[0]||null,dynamicRating=selected?selected.cKgf:num('dynamicRating'),staticRating=selected?selected.c0Kgf:num('staticRating');
+        const staticSf=staticRating/Math.max(pMax,.001);
+        const life=50*Math.pow(dynamicRating/Math.max(pMax,.001),3);
+        const lifeUse=target/life*100;
+        const pass=staticSf>=2 && life>=target && Boolean(selected);
+        setResults(
+          {label:'최대 블록 하중',value:`${fmt(pMax,1)} kgf`,sub:`${total}블록 분담`},
+          [['THK 1차 선정',selected?`${selected.model} · C ${fmt(selected.cKgf,0)} kgf`:'등록 형번 범위 초과'],['기본 분담하중',`${fmt(base,1)} kgf`],['모멘트 추가하중',`${fmt(pitchAdd+rollAdd,1)} kgf`],['필요 동정격 C',`${fmt(requiredC,0)} kgf`],['정적 안전율',`${fmt(staticSf,1)}`,2/staticSf*100],['예상 정격수명',`${fmt(life,0)} km`,lifeUse]],
+          [`기본하중 P = W × fw × 분배계수 / 총 블록수`, `피치 추가하중 = (가속력 × 무게중심 높이) / (블록 간격 × 레일 수)`, `필요 C = Pmax × ∛(목표수명 / 50 km)`, `정적 안전율 fs = C0 / Pmax`, `정격수명 L = 50 × (C / Pmax)³ km`],
+          pass ? `<strong>${selected.model}</strong> 블록 ${total}개를 1차 선정했습니다. 정적 안전율 ${fmt(staticSf,1)}, 예상수명 ${fmt(life,0)} km입니다. 실제 레일 취부면 정밀도, 각 방향 등가하중, 허용 모멘트, 블록 간격과 윤활주기를 THK 기준으로 최종 확인하세요.` : `등록된 THK HSR/SR 형번 범위에서 정적 안전율 2와 목표수명을 동시에 만족하지 못합니다. 블록 수·사이즈·간격 확대 또는 무게중심 하향을 검토하세요.`,
+          pass
+        );
+      }
+
+      function cylinderForce(bore, rod, pressure, motion) {
+        const area=motion==='push' ? Math.PI*bore*bore/4 : Math.PI*(bore*bore-rod*rod)/4;
+        return area*(pressure*.1)/g;
+      }
+
+      function calcCylinder() {
+        const mass=num('mass'), speed=num('speed')/1000, ta=Math.max(num('accelTime'),.001), axis=val('axis');
+        const accelKgf=mass*(speed/ta)/g;
+        let steady=axis==='horizontal' ? num('friction')*mass : (axis==='vertical-up' ? mass : 0);
+        steady += num('external');
+        const required=(steady+accelKgf)*num('safety');
+        const available=cylinderForce(num('bore'),num('rod'),num('pressure'),val('motion'));
+        const use=required/available*100;
+        const bores=[6,8,10,12,16,20,25,32,40,50,63,80,100,125,140,160,200,250,320];
+        const recommended=bores.find(b => cylinderForce(b,standardRodByBore[b]||b*.4,num('pressure'),val('motion'))>=required) || '>320';
+        const areaPush=Math.PI*num('bore')*num('bore')/4;
+        const areaPull=Math.PI*(num('bore')*num('bore')-num('rod')*num('rod'))/4;
+        const sweptMm3=(areaPush+areaPull)*num('stroke');
+        const nlMin=sweptMm3/1e6*(num('pressure')+1)*num('cycles');
+        const pass=use<=100;
+        setResults(
+          {label:'필요 추력(안전율 포함)',value:`${fmt(required,1)} kgf`,sub:`${fmt(required*g,0)} N`},
+          [['실린더 발생 추력',`${fmt(available,1)} kgf`,use],['추력 사용률',`${fmt(use,1)} %`,use],['계산상 최소 내경',`${recommended} mm`],['왕복 공기소비량',`${fmt(nlMin,1)} NL/min`]],
+          [`가속력 = m × (v / t) / g`, `필요 추력 = (마찰·중량 + 가속력 + 외력) × 안전율`, `발생 추력 = 유효단면적 × 압력`, `공기소비량 = 왕복 체적 × (게이지압 + 1) × 사이클`],
+          pass ? `현재 ${fmt(num('bore'),0)} mm 내경은 계산상 조건을 만족합니다. 표준형 최소 계산치는 ${recommended} mm입니다. 표시 로드경은 대표값이므로 실제 제조사·시리즈 도면을 확인하고, 씰 저항·배관 압손·스틱슬립을 고려해 여유를 두세요.` : `현재 내경은 추력이 부족합니다. 최소 ${recommended} mm 이상으로 키우거나 실제 동작압·가속시간·기구 저항을 재검토하세요. 표시 로드경은 대표값이며 수직 하강축은 낙하방지 회로가 별도로 필요합니다.`,
+          pass
+        );
+      }
+
+      function calculate() {
+        if (!form.checkValidity()) return;
+        if (active==='ballscrew') calcBallscrew();
+        if (active==='servo') calcServo();
+        if (active==='lm') calcLm();
+        if (active==='cylinder') calcCylinder();
+      }
+
+      form.addEventListener('submit', e => { e.preventDefault(); calculate(); });
+      root.querySelector('#load-example').addEventListener('click', renderFields);
+      root.querySelector('#reset-current').addEventListener('click', () => {
+        fieldHost.querySelectorAll('input').forEach(i => i.value='');
+        root.querySelector('#result-hero').innerHTML='<span>예제값을 불러오거나 조건을 입력하세요.</span>';
+        root.querySelector('#metric-grid').innerHTML='';
+        root.querySelector('#formula-list').innerHTML='';
+        root.querySelector('#selection-note').innerHTML='<strong>최종 선정안</strong><br>입력 완료 후 계산 결과에 따라 표시됩니다.';
+      });
+      fieldHost.addEventListener('input', () => { if (form.checkValidity()) calculate(); });
+      fieldHost.addEventListener('change', event => {
+        if(active==='servo')refreshServoFields(event.target.id==='f-servoSeries');
+        if(active==='cylinder'&&event.target.id==='f-bore')refreshCylinderRod();
+        if (form.checkValidity()) calculate();
+      });
+      renderFields();
+    })();
+  </script>
+</div>
+
+
+<div class="reference-card"><p class="source-note">설계 계산과 규격표는 1차 검토용입니다. 실제 제작·발주 전 최신 제조사 자료 및 관련 표준을 확인하세요.</p><button class="button" type="button" onclick="window.print()">인쇄 · PDF 저장</button></div></main><footer class="footer"><strong>ItsnoruLAB Design Tools</strong><span>Public edition · no login / no project database</span></footer></div></body></html>

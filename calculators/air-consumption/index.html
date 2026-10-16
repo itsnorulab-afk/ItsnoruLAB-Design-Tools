@@ -1,0 +1,104 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b5263"><title>calculators/air-consumption · ItsnoruLAB Design Tools</title><link rel="manifest" href="../../manifest.json"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../styles/ui-v2.css"><link rel="stylesheet" href="../../public-design-tools.css"><script defer src="../../theme.js"></script></head><body><div class="site-shell"><header class="app-header"><div class="topbar"><a class="brand" href="../../"><span class="brand-copy"><strong>ItsnoruLAB</strong><small>Design Tools · Public</small></span></a><nav class="global-nav" aria-label="도구"><a href="../../">전체 도구</a><a href="../../calculators/servo/">기계</a><a href="../../electrical/motor-current/">전기</a><a href="../../standards/holes-taps/">규격</a><a href="../../catalog/bushings/">기성품</a></nav></div></header><main>
+<section class="page-heading calculator-heading">
+  <div>
+    <p class="eyebrow">PNEUMATIC UTILITY</p>
+    <h1>에어소모량 계산</h1>
+    <p>여러 공정의 복동 실린더 소모량과 순간유량을 합산해 에어서비스유닛 유량을 검토합니다.</p>
+  </div>
+  <div class="page-actions"><a class="button" href="../../">메인으로</a><a class="button button-ghost" href="../../">이전 선택</a></div>
+</section>
+
+<div id="air-consumption-app">
+  <section class="reference-card air-settings-card">
+    <div class="result-heading">
+      <div><span class="status-label state-on">전체 선정 조건</span><h2>메인 에어서비스유닛 조건</h2></div>
+      <button class="button button-small" id="air-example" type="button">예제값 불러오기</button>
+    </div>
+    <div class="air-settings-grid">
+      <label>전체 동시사용률 <span class="field-unit">%</span><input id="air-overall-concurrency" type="number" min="1" max="100" step="1" value="70"></label>
+      <label>선정 여유율 <span class="field-unit">%</span><input id="air-margin" type="number" min="100" max="300" step="5" value="130"></label>
+      <label>표준대기압 <span class="field-unit">bar abs</span><input id="air-atmosphere" type="number" min="0.8" max="1.2" step="0.001" value="1.013"></label>
+    </div>
+    <p class="reference-note">전체 동시사용률은 서로 다른 공정의 피크가 겹치는 비율입니다. 안전 관련 축이나 실제 동시동작 공정은 반드시 100%로 검토하세요.</p>
+  </section>
+
+  <section class="reference-card air-process-card">
+    <div class="result-heading">
+      <div><span class="status-label state-on">공정 입력</span><h2>실린더 공정 목록</h2></div>
+      <button class="button button-small" id="air-add-row" type="button">공정 추가</button>
+    </div>
+    <p class="reference-note">SMC MB/MDB, CQ2/CDQ2, CG3/CDG3, CM3/CDM3, CA2/CDA2, CS1/CDS1, MGP-Z, MGQ 및 C96/CP96 표준 단로드 계열은 형번 입력 시 내경·로드경·스트로크가 자동 입력됩니다. 인식되지 않는 제조사·계열·특주 형번은 기존 값을 유지하므로 직접 입력하세요. 동작횟수 1회는 전진+후진 1왕복입니다.</p>
+    <div class="air-process-scroll">
+      <table class="air-input-table" aria-label="공정별 실린더 입력">
+        <thead><tr><th>공정 / 형번</th><th>수량</th><th>내경 / 로드경</th><th>스트로크</th><th>왕복횟수 / 사이클</th><th>사이클 시간</th><th>1행정 동작시간</th><th>압력</th><th>배관 길이</th><th>동시동작률</th><th>윤활 필요</th><th>삭제</th></tr></thead>
+        <tbody id="air-process-rows"></tbody>
+      </table>
+    </div>
+    <div class="air-actions"><button class="button button-primary" id="air-calculate" type="button">계산하기</button><button class="button" id="air-reset" type="button">초기화</button></div>
+    <div class="form-error air-form-error" id="air-error" role="alert" hidden></div>
+  </section>
+
+  <section class="air-summary-grid" aria-label="전체 계산 결과">
+    <div class="air-summary-card"><span>전체 평균 소모량</span><strong id="air-total-average">—</strong><small>NL/min (ANR)</small></div>
+    <div class="air-summary-card"><span>동시 피크 유량</span><strong id="air-total-peak">—</strong><small>NL/min (ANR)</small></div>
+    <div class="air-summary-card air-summary-primary"><span>메인 설계유량</span><strong id="air-main-design">—</strong><small>여유율 포함</small></div>
+    <div class="air-summary-card air-summary-primary"><span>메인 유닛 최소 등급</span><strong id="air-main-class">—</strong><small>정격유량 기준</small></div>
+  </section>
+
+  <section class="reference-card air-result-card">
+    <div class="result-heading"><div><span class="status-label">계산 결과</span><h2>공정별 에어서비스유닛 선정</h2></div><span class="thread-chip">FR</span></div>
+    <div class="spec-table-wrap"><table class="spec-table air-result-table" aria-label="공정별 에어소모량 계산 결과"><thead><tr><th>공정 / 형번</th><th>1왕복 소비량</th><th>순간 필요유량</th><th>튜브 선정</th><th>예상 압력강하</th><th>SMC 솔밸브</th><th>에어유닛</th></tr></thead><tbody id="air-results"></tbody></table></div>
+  </section>
+
+  <section class="reference-card air-formulas">
+    <span class="status-label">계산식·선정 기준</span><h2>계산 기준</h2>
+    <ol class="formula-list">
+      <li>전진 체적 = π × 내경² ÷ 4 × 스트로크, 후진 체적 = π × (내경² − 로드경²) ÷ 4 × 스트로크</li>
+      <li>표준상태 1왕복 소비량 = (전진 체적 + 후진 체적) × (게이지압 + 대기압) ÷ 대기압</li>
+      <li>평균 소모량 = 1왕복 소비량 × 수량 × 왕복횟수 × 60 ÷ 사이클 시간</li>
+      <li>순간 필요유량 = 큰 쪽 행정 소비량 × 수량 × 공정 동시동작률 × 60 ÷ 1행정 동작시간</li>
+      <li>공정 설계유량은 평균과 순간유량 중 큰 값에 선정 여유율을 적용합니다. 전체는 평균합계와 동시 피크 중 큰 값을 사용합니다.</li>
+      <li>튜브는 압축상태 체적유량으로 환산해 유속 20 m/s 이하, 예상 압력강하 0.2 bar 이하가 되는 최소 규격을 1차 선정합니다.</li>
+      <li>솔밸브는 SMC SY3000/5000/7000/9000의 적용 실린더 내경을 기준으로, 에어유닛은 공정 설계유량 이상의 AC-D 등급을 표시합니다.</li>
+    </ol>
+    <p class="source-note">배관 압력강하는 직선 TU 튜브의 1차 추정이며 피팅·스피드컨트롤러·소음기·매니폴드 손실은 별도입니다. 실제 행정시간과 부하율은 SMC Cylinder Drive System Selection Software로 최종 확인하세요. 무급유 실린더에는 제조사 요구가 없는 한 루브리케이터를 임의로 추가하지 마세요.</p>
+  </section>
+</div>
+
+<script nonce="">
+(()=>{const rowsEl=document.getElementById('air-process-rows'),resultsEl=document.getElementById('air-results'),errorEl=document.getElementById('air-error');let rowId=0;
+const pneumaticTubes=[{"model":"TU0425","od":4,"id":2.5},{"model":"TU0604","od":6,"id":4},{"model":"TU0805","od":8,"id":5},{"model":"TU1065","od":10,"id":6.5},{"model":"TU1208","od":12,"id":8},{"model":"TU1610","od":16,"id":10}],pneumaticValves=[{"model":"SY3000","maxBore":50,"sonic":1.6},{"model":"SY5000","maxBore":63,"sonic":3.6},{"model":"SY7000","maxBore":80,"sonic":5.9},{"model":"SY9000","maxBore":100,"sonic":10}],airUnits=[{"model":"AC20-D","ratedFlow":500,"port":"Rc 1/8·1/4"},{"model":"AC30-D","ratedFlow":1000,"port":"Rc 1/4·3/8"},{"model":"AC40-D","ratedFlow":2000,"port":"Rc 1/4·3/8·1/2"},{"model":"AC40-06-D","ratedFlow":4000,"port":"Rc 3/4"},{"model":"AC50-D","ratedFlow":6000,"port":"Rc 3/4·1"},{"model":"AC60-D","ratedFlow":10000,"port":"Rc 1"}];
+const examples=[
+ {process:'클램프',model:'CQ2B40-50',qty:2,bore:40,rod:16,stroke:50,cycles:1,cycleTime:15,strokeTime:.5,pressure:5,lineLength:3,simult:100,lubrication:false},
+ {process:'승강',model:'C96SDB63-200',qty:1,bore:63,rod:20,stroke:200,cycles:1,cycleTime:20,strokeTime:1,pressure:5,lineLength:5,simult:100,lubrication:false},
+ {process:'배출',model:'CDQ2B32-30',qty:2,bore:32,rod:12,stroke:30,cycles:2,cycleTime:15,strokeTime:.3,pressure:5,lineLength:2,simult:50,lubrication:false}
+];
+const blank={process:'',model:'',qty:1,bore:32,rod:12,stroke:100,cycles:1,cycleTime:20,strokeTime:.5,pressure:5,lineLength:3,simult:100,lubrication:false};
+const modelSeries={
+ MB:{label:'SMC MB/MDB',prefix:/^(?:MDB|MB)/,rods:{32:16,40:20,50:25,63:25,80:30,100:36,125:40}},
+ CQ2:{label:'SMC CQ2/CDQ2',prefix:/^(?:CDQ2|CQ2)/,rods:{12:6,16:8,20:10,25:12,32:16,40:16,50:20,63:20,80:25,100:30}},
+ CG3:{label:'SMC CG3/CDG3',prefix:/^(?:CDG3|CG3)/,rods:{20:8,25:10,32:12,40:14,50:18,63:18,80:22,100:26}},
+ CM3:{label:'SMC CM3/CDM3',prefix:/^(?:CDM3|CM3)/,rods:{20:8,25:10,32:12,40:14}},
+ CA2:{label:'SMC CA2/CDA2',prefix:/^(?:CDA2|CA2)/,rods:{40:16,50:20,63:20,80:25,100:30}},
+ CS1:{label:'SMC CS1/CDS1',prefix:/^(?:CDS1|CS1)/,rods:{125:36,140:36,160:36,180:45,200:50,250:60,300:70}},
+ MGPZ:{label:'SMC MGP-Z',prefix:/^MGP(?:M|L|A)?/,rods:{12:6,16:8,20:10,25:10,32:14,40:14,50:20,63:20,80:25,100:30}},
+ MGQ:{label:'SMC MGQ',prefix:/^MGQ(?:M|L)?/,rods:{12:6,16:8,20:10,25:12,32:16,40:16,50:20,63:20,80:25,100:30}},
+ C96:{label:'SMC C96/CP96',prefix:/^(?:CP96|C96)/,rods:{32:12,40:16,50:20,63:20,80:25,100:25,125:32}}
+};
+const fmt=(n,d=1)=>Number.isFinite(n)?n.toLocaleString('ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
+const safe=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+function addRow(data=blank){const id=++rowId,tr=document.createElement('tr');tr.dataset.row=id;tr.innerHTML=`<td><input class="air-process-name" aria-label="공정명" placeholder="공정명" value="${safe(data.process)}"><input class="air-model" aria-label="실린더 형번" placeholder="예: CDQ2B32-30" value="${safe(data.model)}"><small class="air-model-status">형번 확인 중</small></td><td><input class="air-qty" aria-label="수량" type="number" min="1" step="1" value="${data.qty}"><small>개</small></td><td><div class="air-pair"><input class="air-bore" aria-label="실린더 내경" type="number" min="1" step="any" value="${data.bore}"><span>/</span><input class="air-rod" aria-label="로드경" type="number" min="0" step="any" value="${data.rod}"></div><small>mm / mm</small></td><td><input class="air-stroke" aria-label="스트로크" type="number" min="1" step="any" value="${data.stroke}"><small>mm</small></td><td><input class="air-cycles" aria-label="왕복횟수" type="number" min="0.01" step="any" value="${data.cycles}"><small>회</small></td><td><input class="air-cycle-time" aria-label="사이클 시간" type="number" min="0.01" step="any" value="${data.cycleTime}"><small>초</small></td><td><input class="air-stroke-time" aria-label="1행정 동작시간" type="number" min="0.01" step="any" value="${data.strokeTime}"><small>초</small></td><td><input class="air-pressure" aria-label="게이지 압력" type="number" min="0" step="any" value="${data.pressure}"><small>bar(g)</small></td><td><input class="air-line-length" aria-label="배관 길이" type="number" min="0" step="any" value="${data.lineLength??3}"><small>m</small></td><td><input class="air-simult" aria-label="공정 동시동작률" type="number" min="1" max="100" step="1" value="${data.simult}"><small>%</small></td><td><select class="air-lubrication" aria-label="윤활 필요"><option value="no" ${data.lubrication?'':'selected'}>아니오 · FR</option><option value="yes" ${data.lubrication?'selected':''}>예 · FRL</option></select></td><td><button class="button button-small button-danger air-delete" type="button" aria-label="공정 삭제">삭제</button></td>`;rowsEl.appendChild(tr);recognizeModel(tr);}
+function recognizeModel(tr){const input=tr.querySelector('.air-model'),status=tr.querySelector('.air-model-status'),model=input.value.toUpperCase().replace(/[\s_]/g,'');if(!model){status.textContent='형번 입력 시 자동 확인';status.className='air-model-status';return false;}const series=Object.values(modelSeries).find(item=>item.prefix.test(model));if(!series){status.textContent='미지원 형번 · 치수 직접 입력';status.className='air-model-status air-model-manual';return false;}const bores=Object.keys(series.rods).sort((a,b)=>Number(b)-Number(a)).join('|'),match=model.match(new RegExp(`(${bores})-(\\d+(?:\\.\\d+)?)`));if(!match){status.textContent=`${series.label} · 치수 직접 입력`;status.className='air-model-status air-model-manual';return false;}const bore=Number(match[1]),stroke=Number(match[2]);tr.querySelector('.air-bore').value=bore;tr.querySelector('.air-rod').value=series.rods[bore];tr.querySelector('.air-stroke').value=stroke;status.textContent=`자동 인식 · ${series.label} Ø${bore}-${stroke}`;status.className='air-model-status air-model-recognized';return true;}
+function read(tr){const n=c=>Number(tr.querySelector(c).value);return{process:tr.querySelector('.air-process-name').value.trim()||`공정 ${tr.dataset.row}`,model:tr.querySelector('.air-model').value.trim()||'—',qty:n('.air-qty'),bore:n('.air-bore'),rod:n('.air-rod'),stroke:n('.air-stroke'),cycles:n('.air-cycles'),cycleTime:n('.air-cycle-time'),strokeTime:n('.air-stroke-time'),pressure:n('.air-pressure'),lineLength:n('.air-line-length'),simult:n('.air-simult'),lubrication:tr.querySelector('.air-lubrication').value==='yes'}}
+function flowClass(flow){const classes=[100,200,300,500,800,1000,1500,2000,3000,5000,8000,12000,20000],found=classes.find(v=>v>=flow);return found?`${found.toLocaleString('ko-KR')} NL/min`:'20,000 NL/min 초과';}
+function selectLine(x,design){const absolute=Math.max(x.pressure+1.013,1.013),actualM3s=design/absolute/60000;const tubes=pneumaticTubes.map(t=>{const area=Math.PI*Math.pow(t.id/1000,2)/4,velocity=actualM3s/area,density=1.2*absolute,dp=.03*(x.lineLength/(t.id/1000))*(density*velocity*velocity/2)/100000;return{...t,velocity,dp}});const tube=tubes.find(t=>t.velocity<=20&&t.dp<=.2)||tubes.at(-1);return{tube,valve:pneumaticValves.find(v=>x.bore<=v.maxBore)||null,unit:airUnits.find(u=>u.ratedFlow>=design)||null};}
+function calculate(){const atmosphere=Number(document.getElementById('air-atmosphere').value),margin=Number(document.getElementById('air-margin').value)/100,overall=Number(document.getElementById('air-overall-concurrency').value)/100,items=[];let error='';
+for(const tr of rowsEl.querySelectorAll('tr')){const x=read(tr),values=[x.qty,x.bore,x.stroke,x.cycles,x.cycleTime,x.strokeTime,x.simult];tr.classList.remove('air-row-error');if(values.some(v=>!Number.isFinite(v)||v<=0)||!Number.isFinite(x.rod)||x.rod<0||!Number.isFinite(x.pressure)||x.pressure<0||!Number.isFinite(x.lineLength)||x.lineLength<0||x.simult>100||!Number.isFinite(atmosphere)||atmosphere<=0||!Number.isFinite(margin)||margin<1||!Number.isFinite(overall)||overall<=0||overall>1){tr.classList.add('air-row-error');error='모든 입력값의 범위를 확인해 주세요.';continue;}if(x.rod>=x.bore){tr.classList.add('air-row-error');error='로드경은 실린더 내경보다 작아야 합니다.';continue;}const extL=Math.PI*x.bore*x.bore/4*x.stroke/1e6,retL=Math.PI*(x.bore*x.bore-x.rod*x.rod)/4*x.stroke/1e6,ratio=(x.pressure+atmosphere)/atmosphere,extN=extL*ratio,retN=retL*ratio,roundTrip=extN+retN,average=roundTrip*x.qty*x.cycles*60/x.cycleTime,peak=Math.max(extN,retN)*x.qty*(x.simult/100)*60/x.strokeTime,design=Math.max(average,peak)*margin,line=selectLine(x,design);items.push({...x,roundTrip,average,peak,design,...line});}
+errorEl.hidden=!error;errorEl.textContent=error;if(!items.length){resultsEl.innerHTML='<tr><td colspan="7">계산할 수 있는 공정을 입력하세요.</td></tr>';['air-total-average','air-total-peak','air-main-design','air-main-class'].forEach(id=>document.getElementById(id).textContent='—');return;}
+const totalAverage=items.reduce((s,x)=>s+x.average,0),sumPeak=items.reduce((s,x)=>s+x.peak,0),coincidentPeak=sumPeak*overall,mainDesign=Math.max(totalAverage,coincidentPeak)*margin,mainUnit=airUnits.find(u=>u.ratedFlow>=mainDesign);document.getElementById('air-total-average').textContent=fmt(totalAverage);document.getElementById('air-total-peak').textContent=fmt(coincidentPeak);document.getElementById('air-main-design').textContent=`${fmt(mainDesign)} NL/min`;document.getElementById('air-main-class').textContent=mainUnit?`${mainUnit.model} · ${mainUnit.ratedFlow.toLocaleString('ko-KR')} NL/min`:`AC60-D 범위 초과`;resultsEl.innerHTML=items.map(x=>`<tr><th scope="row"><strong>${safe(x.process)}</strong><small>${safe(x.model)} · ${x.qty}개</small></th><td><strong>${fmt(x.roundTrip,3)} NL</strong><small>평균 ${fmt(x.average)} NL/min</small></td><td><strong>${fmt(x.peak)} NL/min</strong><small>설계 ${fmt(x.design)} NL/min</small></td><td><strong>${x.tube?`${x.tube.model} · Ø${x.tube.od}`:'범위 초과'}</strong><small>${x.tube?`유속 ${fmt(x.tube.velocity)} m/s`:'대구경 별도 선정'}</small></td><td><strong>${x.tube?fmt(x.tube.dp,3):'—'} bar</strong><small>직선 ${fmt(x.lineLength)} m 기준</small></td><td><strong>${x.valve?x.valve.model:'SY 범위 초과'}</strong><small>${x.valve?`C ${x.valve.sonic} dm³/(s·bar)`:'대유량 밸브 별도 선정'}</small></td><td><strong>${x.unit?x.unit.model:'AC60-D 범위 초과'}</strong><small>${x.unit?`${x.unit.port} · ${x.lubrication?'FRL':'FR'}`:'메인 라인 분할 검토'}</small></td></tr>`).join('');}
+function loadExample(){rowsEl.innerHTML='';examples.forEach(addRow);calculate();}
+document.getElementById('air-add-row').addEventListener('click',()=>addRow());document.getElementById('air-calculate').addEventListener('click',calculate);document.getElementById('air-example').addEventListener('click',loadExample);document.getElementById('air-reset').addEventListener('click',()=>{rowsEl.innerHTML='';addRow();resultsEl.innerHTML='';errorEl.hidden=true;['air-total-average','air-total-peak','air-main-design','air-main-class'].forEach(id=>document.getElementById(id).textContent='—');});rowsEl.addEventListener('click',e=>{if(!e.target.closest('.air-delete'))return;e.target.closest('tr').remove();if(!rowsEl.children.length)addRow();calculate();});rowsEl.addEventListener('input',e=>{const tr=e.target.closest('tr');if(tr&&e.target.classList.contains('air-model'))recognizeModel(tr);calculate();});rowsEl.addEventListener('change',calculate);document.querySelector('.air-settings-grid').addEventListener('input',calculate);loadExample();})();
+</script>
+
+
+<div class="reference-card"><p class="source-note">설계 계산과 규격표는 1차 검토용입니다. 실제 제작·발주 전 최신 제조사 자료 및 관련 표준을 확인하세요.</p><button class="button" type="button" onclick="window.print()">인쇄 · PDF 저장</button></div></main><footer class="footer"><strong>ItsnoruLAB Design Tools</strong><span>Public edition · no login / no project database</span></footer></div></body></html>

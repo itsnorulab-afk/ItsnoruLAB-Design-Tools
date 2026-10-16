@@ -1,0 +1,23 @@
+#ks-standard-app { --blue:#2b6f9e; --orange:#d58621; }
+#ks-standard-app * { box-sizing:border-box; }
+#ks-standard-app .standard-tabs { display:flex; gap:8px; margin-bottom:16px; }
+#ks-standard-app .std-tab { flex:1; min-height:46px; border:1px solid var(--line); border-radius:11px; background:var(--surface); color:var(--ink); font-weight:800; cursor:pointer; }
+#ks-standard-app .std-tab[aria-pressed="true"] { background:var(--navy); color:white; border-color:var(--navy); }
+#ks-standard-app .std-layout { display:grid; grid-template-columns:minmax(300px,.78fr) minmax(0,1.22fr); gap:16px; align-items:start; }
+#ks-standard-app .std-card { padding:22px; border:1px solid var(--line); border-radius:16px; background:var(--surface); }
+#ks-standard-app h2,#ks-standard-app h3 { margin:0 0 14px; }
+#ks-standard-app .std-form { display:grid; gap:14px; }
+#ks-standard-app .std-hint { margin:0; font-size:13px; }
+#ks-standard-app .std-badge { display:inline-flex; margin-bottom:12px; padding:5px 8px; border-radius:999px; background:#e8f7ef; color:var(--success); font-size:12px; font-weight:800; }
+#ks-standard-app .drawing { min-height:280px; display:grid; place-items:center; border:1px solid var(--line); border-radius:13px; background:#fbfcfa; overflow:hidden; }
+#ks-standard-app svg { width:100%; max-height:330px; }
+#ks-standard-app svg text { font-family:Inter,Pretendard,"Noto Sans KR",sans-serif; fill:#172229; font-size:13px; font-weight:700; }
+#ks-standard-app .result-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin-top:14px; }
+#ks-standard-app .result-item { padding:12px; border:1px solid var(--line); border-radius:10px; }
+#ks-standard-app .result-item span { display:block; margin-bottom:5px; color:var(--muted); font-size:12px; }
+#ks-standard-app .result-item strong { font-size:18px; }
+#ks-standard-app .std-note { margin-top:14px; padding:13px; border-left:3px solid var(--orange); background:#f6f1e8; color:#5e5546; font-size:13px; line-height:1.6; }
+#ks-standard-app .source-note { margin-top:14px; color:var(--muted); font-size:12px; line-height:1.6; }
+@media(max-width:820px){#ks-standard-app .std-layout{grid-template-columns:1fr;}}
+@media(max-width:480px){#ks-standard-app .result-grid{grid-template-columns:1fr;}}
+@media print{.topbar,.footer,.calculator-heading .button,.standard-tabs,.std-form{display:none!important;}#ks-standard-app .std-layout{grid-template-columns:1fr;}}

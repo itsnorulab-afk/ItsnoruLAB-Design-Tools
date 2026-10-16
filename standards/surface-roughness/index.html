@@ -1,0 +1,69 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b5263"><title>standards/surface-roughness · ItsnoruLAB Design Tools</title><link rel="manifest" href="../../manifest.json"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../styles/ui-v2.css"><link rel="stylesheet" href="../../public-design-tools.css"><script defer src="../../theme.js"></script></head><body><div class="site-shell"><header class="app-header"><div class="topbar"><a class="brand" href="../../"><span class="brand-copy"><strong>ItsnoruLAB</strong><small>Design Tools · Public</small></span></a><nav class="global-nav" aria-label="도구"><a href="../../">전체 도구</a><a href="../../calculators/servo/">기계</a><a href="../../electrical/motor-current/">전기</a><a href="../../standards/holes-taps/">규격</a><a href="../../catalog/bushings/">기성품</a></nav></div></header><main>
+<section class="page-heading calculator-heading">
+  <div>
+    <p class="eyebrow">KS B ISO 1302 · KS B ISO 4287</p>
+    <h1>표면거칠기</h1>
+    <p>도면 표시 기호와 일반적인 Ra 등급을 확인합니다.</p>
+  </div>
+  <div class="page-actions">
+    <a class="button" href="../../">메인으로</a>
+    <a class="button button-ghost" href="../../">KS 표준 선택으로</a>
+  </div>
+</section>
+
+<div class="standard-reference">
+  <section class="reference-card symbol-card">
+    <div>
+      <span class="status-label state-on">도면 기호 읽기</span>
+      <h2>표면 텍스처 지시</h2>
+      <p>기호 위의 값은 기본적으로 거칠기 파라미터와 한계값을 표시합니다. 가공 제거가 필요한 면은 가로선이 추가된 기호를, 제거가 허용되지 않는 면은 원이 추가된 기호를 사용합니다.</p>
+    </div>
+    <svg class="roughness-symbol" viewBox="0 0 540 230" role="img" aria-label="표면거칠기 기호 설명">
+      <path d="M82 180 L145 70 L215 180 M125 105 H265" fill="none" stroke="#173f4f" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="275" y="104" font-size="32" font-weight="800" fill="#173f4f">Ra 1.6</text>
+      <line x1="270" y1="118" x2="470" y2="118" stroke="#d9ddd8" stroke-width="2"/>
+      <text x="275" y="151" font-size="18" fill="#65747d">파라미터 · 한계값</text>
+      <text x="82" y="214" font-size="17" fill="#65747d">재료 제거 가공 필요</text>
+    </svg>
+  </section>
+
+  <section class="reference-card">
+    <h2>Ra 등급 빠른 확인</h2>
+    <label>요구 등급
+      <select id="roughness-grade">
+        <option value="0.025">N1 · Ra 0.025 μm</option><option value="0.05">N2 · Ra 0.05 μm</option>
+        <option value="0.1">N3 · Ra 0.1 μm</option><option value="0.2">N4 · Ra 0.2 μm</option>
+        <option value="0.4">N5 · Ra 0.4 μm</option><option value="0.8">N6 · Ra 0.8 μm</option>
+        <option value="1.6" selected>N7 · Ra 1.6 μm</option><option value="3.2">N8 · Ra 3.2 μm</option>
+        <option value="6.3">N9 · Ra 6.3 μm</option><option value="12.5">N10 · Ra 12.5 μm</option>
+        <option value="25">N11 · Ra 25 μm</option><option value="50">N12 · Ra 50 μm</option>
+      </select>
+    </label>
+    <div class="highlight-result" id="roughness-result"></div>
+    <p class="reference-note">가공방법별 범위는 설비, 공구, 재질과 조건에 따라 달라지는 실무 참고값입니다. 기능면의 최종 요구값은 마찰·밀봉·피로·도금 조건과 검사방법을 함께 검토하세요.</p>
+  </section>
+
+  <section class="reference-card reference-wide">
+    <h2>일반 가공방법별 참고 범위</h2>
+    <div class="table-scroll"><table class="reference-table">
+      <thead><tr><th>가공방법</th><th>일반적인 Ra 범위 (μm)</th><th>적용 예</th></tr></thead>
+      <tbody>
+        <tr><td>래핑·초정밀 연마</td><td>0.025–0.2</td><td>정밀 기준면, 게이지면</td></tr>
+        <tr><td>연삭·호닝</td><td>0.2–1.6</td><td>베어링 끼워맞춤면, 실링면</td></tr>
+        <tr><td>정밀 선삭·밀링</td><td>0.8–3.2</td><td>일반 정밀 조립면</td></tr>
+        <tr><td>일반 선삭·밀링</td><td>3.2–6.3</td><td>일반 기계가공면</td></tr>
+        <tr><td>거친 절삭</td><td>6.3–25</td><td>비기능면, 황삭면</td></tr>
+        <tr><td>주조·단조 원소재면</td><td>12.5–50 이상</td><td>비가공 외관면</td></tr>
+      </tbody>
+    </table></div>
+    <p class="source-note">표기 체계는 KS B ISO 1302, 파라미터 정의는 KS B ISO 4287을 기준으로 구성했습니다.</p>
+  </section>
+</div>
+
+<script nonce="">
+(()=>{const select=document.getElementById('roughness-grade'),out=document.getElementById('roughness-result');
+const advice=v=>v<=.2?'초정밀 마감 영역 · 래핑 또는 정밀 연삭 검토':v<=1.6?'정밀 기능면 영역 · 연삭, 호닝 또는 정밀 절삭 검토':v<=6.3?'일반 기계가공 영역 · 선삭 또는 밀링 검토':v<=25?'거친 가공면 영역 · 기능면 적용 여부 재확인':'원소재 또는 매우 거친 면 영역';
+function render(){const option=select.options[select.selectedIndex];out.innerHTML=`<span>선택 등급</span><strong>${option.textContent}</strong><p>${advice(Number(select.value))}</p>`;}select.addEventListener('change',render);render();})();
+</script>
+
+<div class="reference-card"><p class="source-note">설계 계산과 규격표는 1차 검토용입니다. 실제 제작·발주 전 최신 제조사 자료 및 관련 표준을 확인하세요.</p><button class="button" type="button" onclick="window.print()">인쇄 · PDF 저장</button></div></main><footer class="footer"><strong>ItsnoruLAB Design Tools</strong><span>Public edition · no login / no project database</span></footer></div></body></html>

@@ -1,0 +1,77 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b5263"><title>standards/o-rings · ItsnoruLAB Design Tools</title><link rel="manifest" href="../../manifest.json"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../styles/ui-v2.css"><link rel="stylesheet" href="../../public-design-tools.css"><script defer src="../../theme.js"></script></head><body><div class="site-shell"><header class="app-header"><div class="topbar"><a class="brand" href="../../"><span class="brand-copy"><strong>ItsnoruLAB</strong><small>Design Tools · Public</small></span></a><nav class="global-nav" aria-label="도구"><a href="../../">전체 도구</a><a href="../../calculators/servo/">기계</a><a href="../../electrical/motor-current/">전기</a><a href="../../standards/holes-taps/">규격</a><a href="../../catalog/bushings/">기성품</a></nav></div></header><main>
+<section class="page-heading calculator-heading">
+  <div>
+    <p class="eyebrow">KS B 2805 · KS B 2799</p>
+    <h1>O링 가공표준</h1>
+    <p>계열 → 가공 위치 → 호칭 순서로 선택하세요.</p>
+  </div>
+  <div class="page-actions">
+    <a class="button" href="../../">메인으로</a>
+    <a class="button button-ghost" href="../../">KS 표준 선택으로</a>
+  </div>
+</section>
+
+<div id="oring-standard-app">
+  <style>
+    #oring-standard-app *{box-sizing:border-box} #oring-standard-app .oring-layout{display:grid;grid-template-columns:minmax(300px,.76fr) minmax(0,1.24fr);gap:16px;align-items:start}
+    #oring-standard-app .oring-card{padding:22px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+    #oring-standard-app h2,#oring-standard-app h3{margin:0 0 14px} #oring-standard-app .step{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start;margin-bottom:15px}
+    #oring-standard-app .step-no{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;font-weight:800}
+    #oring-standard-app .series-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px} #oring-standard-app .series-btn{min-height:44px;border:1px solid var(--line);border-radius:9px;background:#fff;font-weight:800;cursor:pointer}
+    #oring-standard-app .series-btn[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+    #oring-standard-app .place-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px} #oring-standard-app .place-btn{min-height:44px;border:1px solid var(--line);border-radius:9px;background:#fff;font-weight:800;cursor:pointer}
+    #oring-standard-app .place-btn[aria-pressed="true"]{background:#e4efc8;color:var(--navy);border-color:#9bb957}
+    #oring-standard-app .series-note{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
+    #oring-standard-app .drawing{min-height:330px;display:grid;place-items:center;padding:12px;border:1px solid var(--line);border-radius:13px;background:#fff;overflow:hidden}
+    #oring-standard-app .drawing img{display:block;width:100%;height:auto;max-height:430px;object-fit:contain}
+    #oring-standard-app .result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:14px} #oring-standard-app .result-item{padding:12px;border:1px solid var(--line);border-radius:10px}
+    #oring-standard-app .result-item span{display:block;margin-bottom:5px;color:var(--muted);font-size:12px} #oring-standard-app .result-item strong{font-size:18px}
+    #oring-standard-app .formula{margin-top:14px;padding:13px;border-left:3px solid #2b6f9e;background:#edf4f8;font-size:13px;line-height:1.7}
+    #oring-standard-app .caution{margin-top:10px;padding:13px;border-left:3px solid #d58621;background:#f6f1e8;color:#5e5546;font-size:13px;line-height:1.6}
+    #oring-standard-app .source-note{margin-top:12px;color:var(--muted);font-size:12px;line-height:1.6}
+    @media(max-width:820px){#oring-standard-app .oring-layout{grid-template-columns:1fr}} @media(max-width:480px){#oring-standard-app .result-grid{grid-template-columns:1fr}}
+  </style>
+
+  <div class="oring-layout">
+    <section class="oring-card">
+      <h2>O링 선정 조건</h2>
+      <div class="step"><span class="step-no">1</span><div><label>O링 계열</label><div class="series-grid" id="series-grid"><button type="button" class="series-btn" data-series="P" aria-pressed="true">P 타입</button><button type="button" class="series-btn" data-series="G" aria-pressed="false">G 타입</button><button type="button" class="series-btn" data-series="S" aria-pressed="false">S 타입</button></div><p class="series-note" id="series-note"></p></div></div>
+      <div class="step"><span class="step-no">2</span><div><label>가공 위치</label><div class="place-grid"><button type="button" class="place-btn" data-place="shaft" aria-pressed="true">축용 · 외경 홈</button><button type="button" class="place-btn" data-place="hole" aria-pressed="false">홀용 · 내경 홈</button></div></div></div>
+      <div class="step"><span class="step-no">3</span><label>O링 호칭<select id="nominal"></select></label></div>
+    </section>
+
+    <section class="oring-card">
+      <h2 id="result-title">P3 축용 홈 가공</h2>
+      <div class="drawing" id="drawing"></div>
+      <div class="result-grid" id="result-grid"></div>
+      <div class="formula" id="formula"></div>
+      <div class="caution"><strong>가공 주의</strong><br>홈 모서리의 버를 완전히 제거하고 진입부에 면취를 적용하세요. 고압·진공·왕복운동에서는 재질, 경도, 압력 틈새, 백업링과 표면조도를 추가 검토해야 합니다.</div>
+      <p class="source-note">호칭 치수 기준: KS B 2805/JIS B 2401 계열. 홈 형상 기준: KS B 2799 및 제조사 공식 홈 설계표 교차 확인. 결과는 일반적인 NBR 70 기준의 1차 가공 검토값입니다.</p>
+    </section>
+  </div>
+
+  <script nonce="">
+  (()=>{
+    const app=document.getElementById('oring-standard-app'), nominal=app.querySelector('#nominal'); let series='P',place='shaft';
+    const profiles={1.5:{h:1.20,b:2.0,r:0.2},1.9:{h:1.50,b:2.5,r:0.4},2.0:{h:1.65,b:2.7,r:0.2},2.4:{h:2.00,b:3.2,r:0.4},3.1:{h:2.50,b:4.1,r:0.7},3.5:{h:3.00,b:4.7,r:0.8},5.7:{h:5.00,b:7.5,r:0.8},8.4:{h:7.50,b:11.0,r:1.2}};
+    const P=[]; [3,4,5,6,7,8,9,10].forEach(n=>P.push({code:'P'+n,id:n-.2,cs:1.9,base:n})); P.push({code:'P10A',id:9.8,cs:2.4,base:10});
+    [11,11.2,12,12.5,14,15,16,18,20,21,22].forEach(n=>P.push({code:'P'+n,id:n-.2,cs:2.4,base:n})); P.push({code:'P22A',id:21.7,cs:3.5,base:22},{code:'P22.4',id:22.1,cs:3.5,base:22.4});
+    [24,25,25.5,26,28,29,29.5,30,31,31.5,32,34,35,35.5,36,38,39,40,41,42,44,45,46,48,49,50].forEach(n=>P.push({code:'P'+n,id:n-.3,cs:3.5,base:n}));
+    const G=[]; [25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145].forEach(n=>G.push({code:'G'+n,id:n-.6,cs:3.1,base:n})); [150,155,160,165,170,175,180,185,190,195,200,210,220,230,240,250,260,270,280,290,300].forEach(n=>G.push({code:'G'+n,id:n-.7,cs:5.7,base:n}));
+    const S=[]; [3,4,5,6,7,8,9,10,11.2,12,12.5,14,15,16,18,20,22].forEach(n=>S.push({code:'S'+n,id:n-.5,cs:1.5,base:n})); [22.4,24,25,26,28,29,30,31.5,32,34,35,35.5,36,38,39,40,42,44,45,46,48,50,53,55,56,60,63,65,67,70,71,75,80,85,90,95,100,105,110,112,115,120,125,130,132,135,140,145,150].forEach(n=>S.push({code:'S'+n,id:n-.5,cs:2.0,base:n}));
+    const sets={P,G,S}, notes={P:'P 타입: 운동용 및 원통면 고정용으로 널리 사용.',G:'G 타입: 고정용 중심의 표준 계열.',S:'S 타입: 선경이 얇고 설치 공간이 작은 고정용 계열.'};
+    const f=n=>Number(n).toLocaleString('ko-KR',{maximumFractionDigits:2}); const metric=(l,v)=>`<div class="result-item"><span>${l}</span><strong>${v}</strong></div>`;
+    function drawing(){const shaft=place==='shaft';return `<img src="${shaft?'/oring-shaft-groove.png':'/oring-hole-groove.png'}" alt="${shaft?'축용 외경 홈':'홀용 내경 홈'} 가공 치수도">`}
+    function refreshOptions(){nominal.innerHTML=sets[series].map((o,i)=>`<option value="${i}">${o.code} · ID ${f(o.id)} × ${f(o.cs)}</option>`).join('');app.querySelector('#series-note').textContent=notes[series];render();}
+    function render(){const o=sets[series][Number(nominal.value)],q=profiles[o.cs],dg=place==='shaft'?o.base:o.base+2*q.h,mate=place==='shaft'?o.base+2*q.h:o.base;
+      app.querySelector('#result-title').textContent=`${o.code} ${place==='shaft'?'축용 외경':'홀용 내경'} 홈 가공`; app.querySelector('#drawing').innerHTML=drawing(o,q);
+      app.querySelector('#result-grid').innerHTML=metric('O링 치수 d1 × d2',`φ${f(o.id)} × ${f(o.cs)} mm`)+metric('홈 폭 b',`${f(q.b)} +0.25/0 mm`)+metric('방사 홈 깊이 h',`${f(q.h)} mm`)+metric('홈 바닥 R r1',`R${f(q.r)} 이하`)+metric(place==='shaft'?'축 홈 바닥지름 Dg':'홀 홈 바닥지름 Dg',`φ${f(dg)} mm`)+metric(place==='shaft'?'상대 홀 기준지름 Dh':'상대 축 기준지름 Ds',`φ${f(mate)} mm`);
+      app.querySelector('#formula').innerHTML=`<strong>치수 관계</strong><br>${place==='shaft'?`상대 홀 Dh = 축 홈 바닥 Dg + 2h = ${f(o.base)} + 2×${f(q.h)} = φ${f(mate)} mm`:`홀 홈 바닥 Dg = 상대 축 Ds + 2h = ${f(o.base)} + 2×${f(q.h)} = φ${f(dg)} mm`}<br>O링 외경 = d1 + 2d2 = ${f(o.id)} + 2×${f(o.cs)} = φ${f(o.id+2*o.cs)} mm`;
+    }
+    app.querySelectorAll('[data-series]').forEach(b=>b.addEventListener('click',()=>{series=b.dataset.series;app.querySelectorAll('[data-series]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));refreshOptions()}));
+    app.querySelectorAll('[data-place]').forEach(b=>b.addEventListener('click',()=>{place=b.dataset.place;app.querySelectorAll('[data-place]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));render()})); nominal.addEventListener('change',render); refreshOptions();
+  })();
+  </script>
+</div>
+
+<div class="reference-card"><p class="source-note">설계 계산과 규격표는 1차 검토용입니다. 실제 제작·발주 전 최신 제조사 자료 및 관련 표준을 확인하세요.</p><button class="button" type="button" onclick="window.print()">인쇄 · PDF 저장</button></div></main><footer class="footer"><strong>ItsnoruLAB Design Tools</strong><span>Public edition · no login / no project database</span></footer></div></body></html>

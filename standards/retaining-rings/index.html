@@ -1,0 +1,156 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b5263"><title>standards/retaining-rings · ItsnoruLAB Design Tools</title><link rel="manifest" href="../../manifest.json"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../styles/ui-v2.css"><link rel="stylesheet" href="../../public-design-tools.css"><script defer src="../../theme.js"></script></head><body><div class="site-shell"><header class="app-header"><div class="topbar"><a class="brand" href="../../"><span class="brand-copy"><strong>ItsnoruLAB</strong><small>Design Tools · Public</small></span></a><nav class="global-nav" aria-label="도구"><a href="../../">전체 도구</a><a href="../../calculators/servo/">기계</a><a href="../../electrical/motor-current/">전기</a><a href="../../standards/holes-taps/">규격</a><a href="../../catalog/bushings/">기성품</a></nav></div></header><main>
+<section class="page-heading calculator-heading">
+  <div>
+    <p class="eyebrow">KS MACHINE DESIGN</p>
+    <h1>멈춤링 가공표준</h1>
+    <p>C형·E형 멈춤링의 축·홀 홈 치수를 확인합니다.</p>
+  </div>
+  <div class="page-actions">
+    <a class="button" href="../../">메인으로</a>
+    <a class="button button-ghost" href="../../">KS 표준 선택으로</a>
+  </div>
+</section>
+
+<link rel="stylesheet" href="../../styles/standards.css?v=0.2.0">
+<div id="ks-standard-app">
+
+  <div class="std-layout">
+    <section class="std-card">
+      <span class="std-badge" id="standard-badge">KS B 2805 · KS B 2799</span>
+      <h2 id="form-title">O링 선정 조건</h2>
+      <form class="std-form" id="standard-form">
+        <label id="kind-wrap">적용 형식
+          <select id="kind"></select>
+        </label>
+        <label>호칭
+          <select id="nominal"></select>
+        </label>
+        <p class="std-hint" id="form-hint"></p>
+      </form>
+    </section>
+
+    <section class="std-card">
+      <h2 id="result-title">O링 축 홈 가공</h2>
+      <div class="drawing" id="drawing" aria-label="가공 치수 설명 도면"></div>
+      <div class="result-grid" id="result-grid"></div>
+      <div class="std-note" id="caution"></div>
+      <p class="source-note" id="source-note"></p>
+    </section>
+  </div>
+
+  <script nonce="">
+  (() => {
+    const app=document.getElementById('ks-standard-app');
+    const kinds=app.querySelector('#kind');
+    const nominal=app.querySelector('#nominal');
+    let mode="ring";
+
+    const oringProfiles={
+      '1.9':{h:1.4,b:2.5,r:0.4,clearance:3.0},
+      '2.4':{h:1.8,b:3.2,r:0.4,clearance:4.0},
+      '3.1':{h:2.4,b:4.1,r:0.7,clearance:5.2},
+      '3.5':{h:2.7,b:4.7,r:0.8,clearance:6.0},
+      '5.7':{h:4.6,b:7.5,r:0.8,clearance:10.0},
+      '8.4':{h:6.9,b:11.0,r:1.2,clearance:15.0}
+    };
+    const p=[];
+    [3,4,5,6,7,8,9,10].forEach(n=>p.push({code:'P'+n,id:n-.2,cs:1.9,base:n}));
+    p.push({code:'P10A',id:9.8,cs:2.4,base:10});
+    [11,12,14,15,16,18,20,21,22].forEach(n=>p.push({code:'P'+n,id:n-.2,cs:2.4,base:n}));
+    p.push({code:'P22A',id:21.7,cs:3.5,base:22});
+    [24,25,26,28,29,30,31,32,34,35,36,38,39,40,41,42,44,45,46,48,49,50].forEach(n=>p.push({code:'P'+n,id:n-.3,cs:3.5,base:n}));
+    const g=[];
+    [25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145].forEach(n=>g.push({code:'G'+n,id:n-.6,cs:3.1,base:n}));
+    [150,155,160,165,170,175,180,185,190,195,200,210,220,230,240,250,260,270,280,290,300].forEach(n=>g.push({code:'G'+n,id:n-.7,cs:5.7,base:n}));
+
+    const shaftRows=[
+      [10,9.6,1.15,1.0,'0 / -0.09'],[11,10.5,1.15,1.0,'0 / -0.11'],[12,11.5,1.15,1.0,'0 / -0.11'],[14,13.4,1.15,1.0,'0 / -0.11'],[15,14.3,1.15,1.0,'0 / -0.11'],[16,15.2,1.15,1.0,'0 / -0.11'],[17,16.2,1.15,1.0,'0 / -0.11'],
+      [18,17.0,1.35,1.2,'0 / -0.21'],[19,18.0,1.35,1.2,'0 / -0.21'],[20,19.0,1.35,1.2,'0 / -0.21'],[22,21.0,1.35,1.2,'0 / -0.21'],[24,22.9,1.35,1.2,'0 / -0.21'],[25,23.9,1.35,1.2,'0 / -0.21'],[26,24.9,1.35,1.2,'0 / -0.21'],
+      [28,26.6,1.65,1.5,'0 / -0.25'],[30,28.6,1.65,1.5,'0 / -0.25'],[32,30.3,1.65,1.5,'0 / -0.25'],[35,33.0,1.65,1.5,'0 / -0.25'],[36,34.0,1.90,1.75,'0 / -0.25'],[38,36.0,1.90,1.75,'0 / -0.25'],[40,38.0,1.90,1.75,'0 / -0.25'],[42,39.5,1.90,1.75,'0 / -0.25'],[45,42.5,1.90,1.75,'0 / -0.25'],[48,45.5,1.90,1.75,'0 / -0.25'],
+      [50,47.0,2.20,2.0,'0 / -0.30'],[55,52.0,2.20,2.0,'0 / -0.30'],[56,53.0,2.20,2.0,'0 / -0.30'],[60,57.0,2.20,2.0,'0 / -0.30'],[65,62.0,2.70,2.5,'0 / -0.30'],[70,67.0,2.70,2.5,'0 / -0.30'],[75,72.0,2.70,2.5,'0 / -0.30'],[80,76.5,2.70,2.5,'0 / -0.30'],[85,81.5,3.20,3.0,'0 / -0.35'],[90,86.5,3.20,3.0,'0 / -0.35']
+    ].map(x=>({n:x[0],dg:x[1],w:x[2],t:x[3],tol:x[4]}));
+    const holeRows=[
+      [10,10.4,1.15,1.0,'+0.11 / 0'],[11,11.4,1.15,1.0,'+0.11 / 0'],[12,12.5,1.15,1.0,'+0.11 / 0'],[13,13.6,1.15,1.0,'+0.11 / 0'],[14,14.6,1.15,1.0,'+0.11 / 0'],[15,15.7,1.15,1.0,'+0.11 / 0'],[16,16.8,1.15,1.0,'+0.11 / 0'],[17,17.8,1.15,1.0,'+0.20 / 0'],
+      [18,19.0,1.15,1.0,'+0.21 / 0'],[19,20.0,1.15,1.0,'+0.21 / 0'],[20,21.0,1.15,1.0,'+0.21 / 0'],[22,23.0,1.15,1.0,'+0.21 / 0'],[24,25.2,1.35,1.2,'+0.21 / 0'],[25,26.2,1.35,1.2,'+0.21 / 0'],[26,27.2,1.35,1.2,'+0.21 / 0'],[28,29.4,1.35,1.2,'+0.25 / 0'],[30,31.4,1.35,1.2,'+0.25 / 0'],
+      [32,33.7,1.65,1.5,'+0.25 / 0'],[35,37.0,1.65,1.5,'+0.25 / 0'],[36,38.0,1.65,1.5,'+0.25 / 0'],[38,40.0,1.65,1.5,'+0.25 / 0'],[40,42.5,1.90,1.75,'+0.25 / 0'],[42,44.5,1.90,1.75,'+0.25 / 0'],[45,47.5,1.90,1.75,'+0.25 / 0'],[48,50.5,1.90,1.75,'+0.30 / 0'],
+      [50,53.0,2.20,2.0,'+0.30 / 0'],[52,55.0,2.20,2.0,'+0.30 / 0'],[55,58.0,2.20,2.0,'+0.30 / 0'],[56,59.0,2.20,2.0,'+0.30 / 0'],[60,63.0,2.20,2.0,'+0.30 / 0'],[62,65.0,2.20,2.0,'+0.30 / 0']
+    ].map(x=>({n:x[0],dg:x[1],w:x[2],t:x[3],tol:x[4]}));
+
+    const eRows=[
+      [0.8,'1~1.4',0.8,0.3,0.3],[1.2,'1.4~2',1.2,0.4,0.6],[1.5,'2~2.5',1.5,0.5,0.7],[2,'2.5~3.2',2,0.6,0.8],[2.5,'3.2~4',2.5,0.7,0.9],[3,'4~5',3,0.8,1.0],[4,'5~7',4,1.0,1.2],[5,'6~8',5,1.2,1.4],[6,'7~9',6,1.3,1.5],[7,'8~11',7,1.5,1.8],[8,'9~12',8,1.7,2.0],[9,'10~14',9,1.9,2.2],[10,'11~15',10,2.0,2.3],[12,'13~18',12,2.4,2.7],[15,'16~24',15,3.0,3.2]
+    ].map(x=>({n:x[0],range:x[1],dg:x[2],w:x[3],t:x[4]}));
+
+    const f=n=>Number(n).toLocaleString('ko-KR',{maximumFractionDigits:2});
+    const metric=(label,value)=>`<div class="result-item"><span>${label}</span><strong>${value}</strong></div>`;
+
+    function shaftSvg(external=true){
+      const fill='#d8e0dc', groove='#ffffff', ring='#d58621', dim='#2b6f9e';
+      return `<svg viewBox="0 0 620 300" role="img" aria-label="${external?'축 홈':'구멍 홈'} 단면 치수도">
+        ${external?`<rect x="70" y="105" width="480" height="90" rx="3" fill="${fill}"/><rect x="290" y="105" width="52" height="18" fill="${groove}"/><rect x="290" y="177" width="52" height="18" fill="${groove}"/><rect x="303" y="97" width="26" height="26" fill="${ring}"/><rect x="303" y="177" width="26" height="26" fill="${ring}"/>`:`<rect x="60" y="60" width="500" height="180" rx="4" fill="${fill}"/><rect x="60" y="105" width="500" height="90" fill="white"/><rect x="290" y="87" width="52" height="18" fill="white"/><rect x="290" y="195" width="52" height="18" fill="white"/><rect x="303" y="87" width="26" height="26" fill="${ring}"/><rect x="303" y="187" width="26" height="26" fill="${ring}"/>`}
+        <line x1="290" y1="45" x2="342" y2="45" stroke="${dim}" stroke-width="2"/><line x1="290" y1="37" x2="290" y2="53" stroke="${dim}"/><line x1="342" y1="37" x2="342" y2="53" stroke="${dim}"/><text x="306" y="32">m (홈 폭)</text>
+        <line x1="575" y1="105" x2="575" y2="195" stroke="${dim}" stroke-width="2"/><text x="475" y="145">d1 (기준 ${external?'축':'홀'} 지름)</text>
+        <line x1="255" y1="${external?123:87}" x2="255" y2="${external?177:213}" stroke="${dim}" stroke-width="2"/><text x="105" y="156">d2 (홈 지름)</text>
+        <text x="270" y="270" fill="#65747d">주황색: 멈춤링 / 회색: 가공 모재</text></svg>`;
+    }
+    function oringSvg(flat=false){
+      return `<svg viewBox="0 0 620 300" role="img" aria-label="O링 홈 단면 치수도">
+        <rect x="55" y="180" width="510" height="70" fill="#d8e0dc"/><path d="M260 180v-54h100v54" fill="white" stroke="#172229" stroke-width="2"/>
+        <circle cx="310" cy="145" r="36" fill="#d58621" opacity=".92"/>
+        <line x1="260" y1="88" x2="360" y2="88" stroke="#2b6f9e" stroke-width="2"/><line x1="260" y1="80" x2="260" y2="96" stroke="#2b6f9e"/><line x1="360" y1="80" x2="360" y2="96" stroke="#2b6f9e"/><text x="286" y="72">b (홈 폭)</text>
+        <line x1="390" y1="126" x2="390" y2="180" stroke="#2b6f9e" stroke-width="2"/><line x1="382" y1="126" x2="398" y2="126" stroke="#2b6f9e"/><line x1="382" y1="180" x2="398" y2="180" stroke="#2b6f9e"/><text x="405" y="158">h (홈 깊이)</text>
+        <line x1="274" y1="109" x2="346" y2="181" stroke="#2b6f9e"/><text x="155" y="115">d2 (O링 굵기)</text>
+        <path d="M260 180q0-12 12-12" fill="none" stroke="#2b6f9e" stroke-width="2"/><text x="205" y="205">r1</text>
+        <text x="160" y="278">${flat?'평면 홈 단면':'원통면 축 홈을 펼친 단면'} · 치수기호와 결과표를 대조</text></svg>`;
+    }
+
+    function setKinds(){
+      if(mode==='oring') kinds.innerHTML='<option value="shaft">P계열 · 원통면 축 홈</option><option value="flat-in">P/G계열 · 평면 홈(내압)</option><option value="flat-out">P/G계열 · 평면 홈(외압)</option>';
+      else kinds.innerHTML='<option value="shaft-c">C형 · 축용</option><option value="hole-c">C형 · 구멍용</option><option value="shaft-e">E형 · 축용</option>';
+      setNominals();
+    }
+    function setNominals(){
+      let data;
+      if(mode==='oring') data=kinds.value==='shaft'?p:[...p,...g];
+      else data=kinds.value==='shaft-c'?shaftRows:kinds.value==='hole-c'?holeRows:eRows;
+      nominal.innerHTML=data.map((x,i)=>`<option value="${i}">${mode==='oring'?x.code:(kinds.value==='shaft-e'?'E-'+x.n:'C-'+x.n)}</option>`).join('');
+      render();
+    }
+    function renderOring(){
+      const data=kinds.value==='shaft'?p:[...p,...g], o=data[Number(nominal.value)], q=oringProfiles[String(o.cs)];
+      const flat=kinds.value!=='shaft', od=o.id+2*o.cs;
+      app.querySelector('#standard-badge').textContent='KS B 2805 · KS B 2799';
+      app.querySelector('#result-title').textContent=`${o.code} ${flat?'평면':'축'} 홈 가공`;
+      app.querySelector('#drawing').innerHTML=oringSvg(flat);
+      let html=metric('O링 실제 치수',`내경 ${f(o.id)} × 굵기 ${f(o.cs)} mm`)+metric('홈 폭 b',`${f(q.b)} +0.25/0 mm`)+metric('홈 깊이 h',`${f(q.h)} ±0.05 mm`)+metric('홈 바닥 R r1',`R${f(q.r)} 이하`);
+      if(kinds.value==='shaft') html+=metric('축 홈 바닥지름 d3',`φ${f(o.base)} mm`)+metric('상대 홀 기준지름 d4',`φ${f(o.base+q.clearance)} mm`);
+      else if(kinds.value==='flat-in') html+=metric('내압 기준 홈 외경',`φ${f(od)} mm`)+metric('O링 공칭 외경',`φ${f(od)} mm`);
+      else html+=metric('외압 기준 홈 내경',`φ${f(o.id)} mm`)+metric('O링 공칭 내경',`φ${f(o.id)} mm`);
+      app.querySelector('#result-grid').innerHTML=html;
+      app.querySelector('#caution').innerHTML='<strong>가공 주의</strong><br>모서리는 버 제거 후 매끈하게 마감하고, 조립 진입부에는 O링 손상 방지용 면취를 적용하세요. 운동용·고압·진공·백업링 사용 조건은 압력, 재질, 틈새와 표면조도를 추가 검토해야 합니다.';
+      app.querySelector('#source-note').textContent='기준: KS B 2805(O-링), KS B 2799(O 링 부착 홈부의 모양 및 치수). 호칭·홈 치수는 KS/JIS 계열 제조사 기술표와 교차 확인한 1차 설계값입니다.';
+      app.querySelector('#form-hint').textContent='P: 운동·원통면용 중심 / G: 고정용 중심. 실제 사용 압력과 재질을 별도로 확인하세요.';
+    }
+    function renderRing(){
+      const data=kinds.value==='shaft-c'?shaftRows:kinds.value==='hole-c'?holeRows:eRows, o=data[Number(nominal.value)], isHole=kinds.value==='hole-c', isE=kinds.value==='shaft-e';
+      app.querySelector('#standard-badge').textContent=isE?'KS B 1337 · E형 멈춤링':'KS B 1336 · C형 멈춤링';
+      app.querySelector('#result-title').textContent=isE?`E-${o.n} 축 홈 가공`:`C-${o.n} ${isHole?'구멍':'축'} 홈 가공`;
+      app.querySelector('#drawing').innerHTML=shaftSvg(!isHole);
+      let html;
+      if(isE) html=metric('멈춤링 호칭',`E-${o.n}`)+metric('적용 축 범위',`φ${o.range} mm`)+metric('홈 바닥지름 d2',`φ${f(o.dg)} mm`)+metric('홈 폭 m',`${f(o.w)} mm`)+metric('링 두께 t',`${f(o.t)} mm`);
+      else html=metric(`기준 ${isHole?'홀':'축'}지름 d1`,`φ${f(o.n)} mm`)+metric('홈 지름 d2',`φ${f(o.dg)} mm`)+metric('홈 지름 공차',o.tol+' mm')+metric('홈 폭 m',`${f(o.w)} mm`)+metric('링 두께 t',`${f(o.t)} mm`)+metric('방향',isHole?'내경 홈 가공':'외경 홈 가공');
+      app.querySelector('#result-grid').innerHTML=html;
+      app.querySelector('#caution').innerHTML='<strong>가공 주의</strong><br>홈 측벽은 축선에 직각으로 가공하고 바닥 모서리의 과도한 R과 버를 피하세요. 회전수, 축방향 하중, 충격 및 조립 반복 횟수가 크면 허용 추력과 링 변형을 제조사 자료로 추가 검토해야 합니다.';
+      app.querySelector('#source-note').textContent=isE?'기준: KS B 1337(E형 멈춤링). 적용 축 범위와 홈 치수는 시판 KS/JIS 호환품과 최종 대조하세요.':'기준: KS B 1336(C형 멈춤링), JIS B 2804 호환 치수표 교차 확인. 괄호·선택 호칭은 제조사별 공급 여부를 확인하세요.';
+      app.querySelector('#form-hint').textContent=isE?'E형은 축에 반경 방향으로 삽입합니다.':'C형은 전용 플라이어로 축방향 조립합니다.';
+    }
+    function render(){ mode==='oring'?renderOring():renderRing(); }
+    app.querySelectorAll('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{mode=btn.dataset.mode;app.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x===btn)));app.querySelector('#form-title').textContent=mode==='oring'?'O링 선정 조건':'멈춤링 선정 조건';setKinds();}));
+    kinds.addEventListener('change',setNominals); nominal.addEventListener('change',render);
+    app.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.mode===mode)));
+    app.querySelector('#form-title').textContent=mode==='oring'?'O링 선정 조건':'멈춤링 선정 조건';
+    setKinds();
+  })();
+  </script>
+</div>
+
+<div class="reference-card"><p class="source-note">설계 계산과 규격표는 1차 검토용입니다. 실제 제작·발주 전 최신 제조사 자료 및 관련 표준을 확인하세요.</p><button class="button" type="button" onclick="window.print()">인쇄 · PDF 저장</button></div></main><footer class="footer"><strong>ItsnoruLAB Design Tools</strong><span>Public edition · no login / no project database</span></footer></div></body></html>

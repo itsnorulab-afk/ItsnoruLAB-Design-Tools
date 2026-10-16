@@ -1,0 +1,105 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b5263"><title>calculators/gears/helical · ItsnoruLAB Design Tools</title><link rel="manifest" href="../../../manifest.json"><link rel="stylesheet" href="../../../styles.css"><link rel="stylesheet" href="../../../styles/ui-v2.css"><link rel="stylesheet" href="../../../public-design-tools.css"><script defer src="../../../theme.js"></script></head><body><div class="site-shell"><header class="app-header"><div class="topbar"><a class="brand" href="../../../"><span class="brand-copy"><strong>ItsnoruLAB</strong><small>Design Tools · Public</small></span></a><nav class="global-nav" aria-label="도구"><a href="../../../">전체 도구</a><a href="../../../calculators/servo/">기계</a><a href="../../../electrical/motor-current/">전기</a><a href="../../../standards/holes-taps/">규격</a><a href="../../../catalog/bushings/">기성품</a></nav></div></header><main>
+
+<section class="page-heading calculator-heading">
+  <div>
+    <p class="eyebrow">GEAR DIMENSION CALCULATOR</p>
+    <h1>헬리컬기어</h1>
+    <p>치직각 기준 헬리컬기어 한 쌍의 주요 치수를 계산합니다.</p>
+  </div>
+  <div class="page-actions">
+    <a class="button" href="../../../">메인으로</a>
+    <a class="button button-ghost" href="../../../calculators/gears/spur/">이전 선택</a>
+  </div>
+</section>
+
+<div id="gear-calc-app" data-gear-type="helical">
+  <div class="gear-page-layout">
+    <section class="reference-card">
+      <div class="result-heading"><div><span class="status-label state-on">입력 조건</span><h2>기어 제원</h2></div><button class="button button-small" id="gear-example" type="button">예제값 불러오기</button></div>
+      <form id="gear-form" class="gear-input-grid">
+        <label>기어 1 잇수 z₁<input id="gear-z1" type="number" min="6" step="1" value="20" required></label>
+        <label>기어 2 잇수 z₂<input id="gear-z2" type="number" min="6" step="1" value="40" required></label>
+        <label>치직각 모듈 mn<input id="gear-module" type="number" min="0.1" step="0.1" value="2" required></label>
+        <label>치직각 압력각 αn (°)<input id="gear-angle" type="number" min="5" max="35" step="0.1" value="20" required></label>
+        
+          <label>틈새비율 c*<input id="gear-clearance" type="number" min="0" max="0.5" step="0.01" value="0.25" required></label>
+          <label>비틀림각 β (°)<input id="gear-helix" type="number" min="1" max="45" step="0.1" value="20" required></label>
+        
+        <div class="gear-form-actions"><button class="button button-primary" type="submit">계산하기</button><button class="button" id="gear-reset" type="button">초기화</button></div>
+      </form>
+      <p class="reference-note">두 외접 헬리컬기어는 같은 치직각 모듈·압력각을 사용하고 비틀림 방향은 서로 반대여야 합니다.</p>
+    </section>
+
+    <div class="gear-output-layout">
+      <section class="reference-card gear-result-card">
+        <div class="result-heading"><div><span class="status-label">계산 결과</span><h2 id="gear-result-title">중심거리</h2></div><span class="thread-chip">HG</span></div>
+        <div class="gear-summary">
+          <div><span>중심거리 a</span><strong id="gear-center">—</strong></div>
+          <div><span>기어비 i = z₂/z₁</span><strong id="gear-ratio">—</strong></div>
+          <div><span>정면 압력각 αt</span><strong id="gear-transverse-angle">—</strong></div>
+        </div>
+        <div class="spec-table-wrap">
+          <table class="spec-table gear-result-table" aria-label="기어 계산 결과">
+            <thead><tr><th scope="col">계산 항목</th><th scope="col">기어 1</th><th scope="col">기어 2</th></tr></thead>
+            <tbody id="gear-results"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="reference-card gear-drawing-card">
+        <span class="status-label state-on">참고그림</span>
+        <h2>헬리컬기어 치수 관계</h2>
+        <svg class="gear-reference-drawing" viewBox="0 0 520 420" role="img" aria-label="기어 중심거리와 기준 원 참고그림">
+          <defs>
+            <marker id="gear-arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#2b6f9e"/></marker>
+            <clipPath id="gear-one-clip"><circle cx="145" cy="205" r="92"/></clipPath>
+            <clipPath id="gear-two-clip"><circle cx="365" cy="205" r="122"/></clipPath>
+          </defs>
+          <line x1="145" y1="205" x2="365" y2="205" stroke="#8a969b" stroke-width="2" stroke-dasharray="6 5"/>
+          <circle cx="145" cy="205" r="92" fill="#eef4e0" stroke="#173f4f" stroke-width="4"/>
+          <circle cx="145" cy="205" r="78" fill="none" stroke="#2b6f9e" stroke-width="3" stroke-dasharray="8 5"/>
+          <circle cx="145" cy="205" r="72" fill="none" stroke="#7655a6" stroke-width="2" stroke-dasharray="10 4 2 4"/>
+          <circle cx="145" cy="205" r="64" fill="none" stroke="#d58621" stroke-width="2" stroke-dasharray="3 5"/>
+          <circle cx="365" cy="205" r="122" fill="#e7f0f3" stroke="#173f4f" stroke-width="4"/>
+          <circle cx="365" cy="205" r="108" fill="none" stroke="#2b6f9e" stroke-width="3" stroke-dasharray="8 5"/>
+          <circle cx="365" cy="205" r="101" fill="none" stroke="#7655a6" stroke-width="2" stroke-dasharray="10 4 2 4"/>
+          <circle cx="365" cy="205" r="92" fill="none" stroke="#d58621" stroke-width="2" stroke-dasharray="3 5"/>
+          
+            <g clip-path="url(#gear-one-clip)" stroke="#6b8f22" stroke-width="5" opacity=".55"><path d="M35 275l180-150M45 310l190-160M65 335l190-160M20 245l175-145"/></g>
+            <g clip-path="url(#gear-two-clip)" stroke="#2b6f9e" stroke-width="5" opacity=".45"><path d="M245 115l210 180M235 150l220 190M240 195l200 175M265 80l210 180"/></g>
+          
+          <circle cx="145" cy="205" r="6" fill="#173f4f"/><circle cx="365" cy="205" r="6" fill="#173f4f"/>
+          <line x1="145" y1="55" x2="365" y2="55" stroke="#2b6f9e" stroke-width="2" marker-start="url(#gear-arrow)" marker-end="url(#gear-arrow)"/>
+          <line x1="145" y1="65" x2="145" y2="190" stroke="#2b6f9e" stroke-width="1.5"/><line x1="365" y1="65" x2="365" y2="190" stroke="#2b6f9e" stroke-width="1.5"/>
+          <text id="drawing-center-label" x="215" y="43">중심거리 a</text>
+          <line x1="145" y1="127" x2="145" y2="283" stroke="#2b6f9e" stroke-width="2" marker-start="url(#gear-arrow)" marker-end="url(#gear-arrow)"/>
+          <text id="drawing-d1-label" x="90" y="315">피치원 d₁</text>
+          <line x1="365" y1="97" x2="365" y2="313" stroke="#2b6f9e" stroke-width="2" marker-start="url(#gear-arrow)" marker-end="url(#gear-arrow)"/>
+          <text id="drawing-d2-label" x="310" y="345">피치원 d₂</text>
+          <text x="62" y="105">β ↗</text><text x="405" y="85">↖ β</text>
+          <text x="112" y="395">기어 1</text><text x="335" y="395">기어 2</text>
+        </svg>
+        <ul class="gear-drawing-legend">
+          <li><span class="legend-line legend-outer"></span>이끝원 da</li>
+          <li><span class="legend-line legend-pitch"></span>피치원 d</li>
+          <li><span class="legend-line legend-base"></span>기초원 db</li>
+          <li><span class="legend-line legend-root"></span>이뿌리원 df</li>
+        </ul>
+        <p class="reference-note">평행축 외접 헬리컬기어는 비틀림각의 크기가 같고 방향은 서로 반대입니다.</p>
+      </section>
+    </div>
+    <div class="highlight-result gear-travel-highlight"><span>기어 1이 1회전할 때</span><strong id="gear-driven-rev">—</strong><p>맞물림 피치원에서의 이동량은 기어 1의 피치원 둘레와 같습니다.</p></div>
+  </div>
+
+  <section class="reference-card gear-formulas">
+    <span class="status-label">계산식·기준</span>
+    <h2>적용 계산식</h2>
+    <ol id="gear-formula-list" class="formula-list"></ol>
+    <p class="source-note">치수는 표준 인벌류트 기어의 기하 계산값입니다. 간섭, 언더컷, 전위, 백래시, 강도, 정밀등급과 공차는 포함하지 않으므로 제작 전 기어 제조사와 최종 검토하세요.</p>
+  </section>
+</div>
+
+<script defer src="../../../js/gear-calculator.js?v=0.2.0"></script>
+
+
+<div class="reference-card"><p class="source-note">설계 계산과 규격표는 1차 검토용입니다. 실제 제작·발주 전 최신 제조사 자료 및 관련 표준을 확인하세요.</p><button class="button" type="button" onclick="window.print()">인쇄 · PDF 저장</button></div></main><footer class="footer"><strong>ItsnoruLAB Design Tools</strong><span>Public edition · no login / no project database</span></footer></div></body></html>
