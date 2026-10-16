@@ -1,0 +1,76 @@
+/* One shared palette for home, calculators, standards and catalogs. */
+:root,html[data-theme="dark"]{
+ color-scheme:dark;
+ --ui-bg:#101927;--ui-surface:#19283c;--ui-surface-2:#22354d;
+ --ui-ink:#edf3fb;--ui-muted:#b7c5d8;--ui-line:#405572;
+ --ui-primary:#4b99f5;--ui-primary-2:#203d60;
+ --ui-accent:#8fcbff;--ui-accent-ink:#081728;
+ --ui-blue:#8fcbff;--ui-orange:#f2b569;--ui-purple:#b9a4ed;
+ --ui-shadow-sm:0 3px 14px #00000015;--ui-shadow-md:0 12px 30px #00000025;
+ --paper:#101927;--surface:#19283c;--ink:#edf3fb;--muted:#b7c5d8;
+ --line:#405572;--navy:#8fcbff;--navy-2:#203d60;
+ --lime:#8fcbff;--lime-dark:#4b99f5;--border:#405572;--card:#19283c;
+ --foreground:#edf3fb;--muted-foreground:#b7c5d8;--accent:#8fcbff;
+ --primary:#4b99f5;--primary-foreground:#081728;
+ --destructive:#ff9995;--danger:#ff9995;--danger-soft:#452d3b;
+ --success:#8bdfba;--success-soft:#1e3d3a;
+ --viz-series-1:#4b99f5;--viz-series-2:#8fcbff;
+}
+@media screen{
+ html,body{background:#101927!important;color:#edf3fb!important}
+ body::before{display:none!important}
+ body>header,.app-header{background:#19283c!important;border-color:#405572!important;backdrop-filter:none}
+ .app-header .global-nav{background:#22354d!important;border-color:#405572!important}
+ .app-header .global-nav a,.brand-copy small{color:#b7c5d8!important}
+ .brand-copy strong{color:#edf3fb!important}
+ .reference-card,.page-heading,.card,.panel,.tool-card,.statbar>a,#ks-standard-app .std-card{
+  background:#19283c!important;border-color:#405572!important;color:#edf3fb!important
+ }
+ .page-heading::after{display:none}
+ .eyebrow,.status-label,.section-count,.thread-chip,.summary{color:#8fcbff!important}
+ .page-heading p,.reference-note,.source-note,.assumption,.formula-list,.footer,.tool-card p,.hero p,.section-top p,.statbar span{color:#b7c5d8!important}
+ input,select,textarea,.form-control,#automation-calc-app .form-control{
+  background:#22354d!important;color:#edf3fb!important;border-color:#526b89!important
+ }
+ input::placeholder,textarea::placeholder{color:#a5b7cd!important;opacity:1}
+ option{background:#22354d;color:#edf3fb}
+ button,.button,.btn,.secondary{background:#22354d!important;color:#edf3fb!important;border-color:#526b89!important}
+ .button-primary,.btn-primary,.primary,button[type="submit"],.filter.selected,.std-tab[aria-pressed="true"],button[aria-pressed="true"]{
+  background:#4b99f5!important;color:#081728!important;border-color:#4b99f5!important
+ }
+ button:hover,.button:hover,.tool-card:hover,.statbar>a:hover{border-color:#8fcbff!important}
+ .result-hero,.electrical-hero,.highlight-result,.gear-summary>div,.metric,.field,.spec-result-item,.fit-result-grid .result-item,.chain-summary>div{
+  background:#22354d!important;border-color:#405572!important;color:#edf3fb!important
+ }
+ .result-hero .viz-stat-value,.electrical-hero strong,.highlight-result strong,.metric strong,.spec-result-item strong,.chain-summary strong{
+  color:#8fcbff!important
+ }
+ .status,.viz-badge,.status-label,.thread-chip,.thread-preview+.reference-note,.std-badge{background:#22354d!important;color:#8fcbff!important}
+ .spec-table-wrap,.table-scroll,.bushing-table-wrap,.tube-table-wrap{background:#19283c!important;border-color:#405572!important}
+ table{color:#edf3fb}
+ table thead th,.spec-table thead th,.reference-table th,.bushing-spec-table thead th,.tube-spec-table thead th{
+  background:#203d60!important;color:#c8e5ff!important;border-color:#405572!important
+ }
+ table tbody td,table tbody th,.spec-table tbody td,.spec-table tbody th{
+  background:#19283c!important;color:#edf3fb!important;border-color:#405572!important
+ }
+ table tbody tr:nth-child(even)>td,table tbody tr:nth-child(even)>th{background:#1d2e44!important}
+ table tbody td strong,table code{color:#8fcbff!important}
+ .notice,.selection-note,.std-note,.chain-option,.chain-option.recommended{background:#22354d!important;color:#d6e3f4!important;border-color:#4b99f5!important}
+ .progress-track{background:#2d4461!important}.progress-fill{background:#4b99f5!important}.progress-fill.warn{background:#ff9995!important}
+ .unit,.field-unit,.text-small,.muted,.chain-option dt,.chain-option>div>span{color:#b7c5d8}
+ .state-on{background:#1e3d3a!important;color:#8bdfba!important}
+ .form-error,.air-error{background:#452d3b!important;color:#ffc1be!important}
+ .thread-preview,.fit-diagram,#ks-standard-app .drawing,.gear-reference-drawing,.roughness-symbol,.locknut-drawing,.bushing-diagram-card svg{
+  background:#edf3f8!important;border-color:#526b89!important;border-radius:12px
+ }
+ .thread-preview svg text,.gear-reference-drawing text,.roughness-symbol text,.locknut-drawing text,#ks-standard-app .drawing text,.bushing-diagram-card svg text{
+  fill:#172b3f!important
+ }
+ .hole-zone{background:#cbe3fa!important;color:#173f5f!important}.shaft-zone{background:#bddbd5!important;color:#173f3a!important}
+ .app-update{background:#22354d!important;color:#edf3fb!important;border-color:#526b89!important}
+ .app-update-status{background:#19283c!important;color:#edf3fb!important}
+}
+@media print{
+ :root,html[data-theme="dark"]{color-scheme:light;--paper:#fff;--surface:#fff;--card:#fff;--ink:#000;--foreground:#000;--muted:#333;--muted-foreground:#333;--line:#999;--border:#999;--navy:#000;--ui-bg:#fff;--ui-surface:#fff;--ui-surface-2:#eee;--ui-ink:#000;--ui-muted:#333}
+}
