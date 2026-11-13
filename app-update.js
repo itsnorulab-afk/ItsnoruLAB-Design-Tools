@@ -1,5 +1,5 @@
 (() => {
-  const release='0.2.5';
+  const release='0.2.6';
   const appBase=new URL('./',document.currentScript.src);
   function versionLink(anchor){
     const raw=anchor.getAttribute('href');
